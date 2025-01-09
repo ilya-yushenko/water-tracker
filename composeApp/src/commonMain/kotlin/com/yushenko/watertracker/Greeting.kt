@@ -1,0 +1,9 @@
+package com.yushenko.watertracker
+
+class Greeting {
+    private val platform = getPlatform()
+
+    fun greet(): String {
+        return "Hello, ${platform.name}!"
+    }
+}
