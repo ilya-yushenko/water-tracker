@@ -1,0 +1,170 @@
+package com.yushenko.watertracker.ui.screens.root
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Badge
+import androidx.compose.material.BadgedBox
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.FontFamily
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.yushenko.watertracker.theme.Colors
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import watertracker.composeapp.generated.resources.PlusJakartaSans_Medium
+import watertracker.composeapp.generated.resources.Res
+import watertracker.composeapp.generated.resources.ic_home
+import watertracker.composeapp.generated.resources.ic_settings
+import watertracker.composeapp.generated.resources.ic_statistics
+import watertracker.composeapp.generated.resources.tab_home
+import watertracker.composeapp.generated.resources.tab_settings
+import watertracker.composeapp.generated.resources.tab_statistics
+
+data class BottomNavigationItem(
+    val title: String,
+    val icon: Painter,
+    val hasNews: Boolean,
+    val badgeCount: Int? = null,
+    val route: String,
+)
+
+@Composable
+fun RootScreen() {
+    val navController = rememberNavController()
+    val bottomNavState = remember { mutableStateOf(true) }
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            if (bottomNavState.value) {
+                BottomNavigationBar(navController = navController)
+            }
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+        ) {
+            NavigationHost(
+                navController = navController,
+                bottomNavState = bottomNavState
+            )
+        }
+    }
+}
+
+
+@Composable
+fun BottomNavigationBar(navController: NavController) {
+    val items = listOf(
+        BottomNavigationItem(
+            title = stringResource(Res.string.tab_home),
+            icon = painterResource(Res.drawable.ic_home),
+            hasNews = false,
+            route = "home"
+        ),
+        BottomNavigationItem(
+            title = stringResource(Res.string.tab_statistics),
+            icon = painterResource(Res.drawable.ic_statistics),
+            hasNews = false,
+            route = "statistics"
+        ),
+        BottomNavigationItem(
+            title = stringResource(Res.string.tab_settings),
+            icon = painterResource(Res.drawable.ic_settings),
+            hasNews = false,
+            route = "settings"
+        )
+    )
+
+    BottomNavigation {
+        var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+        items.forEachIndexed { index, item ->
+            BottomNavigationItem(
+                selected = selectedItemIndex == index,
+                onClick = {
+                    selectedItemIndex = index
+                    navController.navigate(item.route) {
+//                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
+                },
+
+                icon = {
+                    BadgedBox(
+                        badge = {
+                            if (item.badgeCount != null) {
+                                Badge {
+                                    Text(text = item.badgeCount.toString())
+                                }
+                            } else if (item.hasNews) {
+                                Badge()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = item.icon,
+                            tint = if (index == selectedItemIndex) Colors.BrightBlue else Colors.MutedGray,
+                            contentDescription = item.title
+                        )
+                    }
+                },
+                label = {
+                    Text(
+                        fontFamily = FontFamily(Font(Res.font.PlusJakartaSans_Medium)),
+                        text = item.title,
+                        color = if (index == selectedItemIndex) Colors.BrightBlue else Colors.MutedGray
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun NavigationHost(
+    navController: NavHostController,
+    bottomNavState: MutableState<Boolean>,
+) {
+    NavHost(
+        navController = navController,
+        startDestination = ScreenRoutes.Statistics.route
+    ) {
+        composable(ScreenRoutes.Home.route) {
+            bottomNavState.value = true
+//            HomeScreen(navController, bottomNavState)
+        }
+        composable(ScreenRoutes.Statistics.route) {
+            bottomNavState.value = true
+//            StatisticsScreen(navController)
+        }
+        composable(ScreenRoutes.Settings.route) {
+            bottomNavState.value = true
+//            SettingsScreen(navController)
+        }
+    }
+
+}
+
+enum class ScreenRoutes(val route: String) {
+    Home("home"),
+    Statistics("statistics"),
+    Settings("settings")
+}
