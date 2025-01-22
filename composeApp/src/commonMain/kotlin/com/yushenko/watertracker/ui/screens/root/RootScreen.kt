@@ -1,5 +1,6 @@
 package com.yushenko.watertracker.ui.screens.root
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.navigation.NavController
@@ -26,11 +28,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.yushenko.watertracker.theme.ColorBlue
+import com.yushenko.watertracker.theme.ColorGray
 import com.yushenko.watertracker.theme.Colors
+import com.yushenko.watertracker.ui.screens.home.HomeScreen
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import watertracker.composeapp.generated.resources.PlusJakartaSans_Medium
+import watertracker.composeapp.generated.resources.Inter_Medium
 import watertracker.composeapp.generated.resources.Res
 import watertracker.composeapp.generated.resources.ic_home
 import watertracker.composeapp.generated.resources.ic_settings
@@ -121,16 +126,16 @@ fun BottomNavigationBar(navController: NavController) {
                     ) {
                         Icon(
                             painter = item.icon,
-                            tint = if (index == selectedItemIndex) Colors.BrightBlue else Colors.MutedGray,
+                            tint = if (index == selectedItemIndex) ColorBlue else ColorGray,
                             contentDescription = item.title
                         )
                     }
                 },
                 label = {
                     Text(
-                        fontFamily = FontFamily(Font(Res.font.PlusJakartaSans_Medium)),
+                        fontFamily = FontFamily(Font(Res.font.Inter_Medium)),
                         text = item.title,
-                        color = if (index == selectedItemIndex) Colors.BrightBlue else Colors.MutedGray
+                        color = if (index == selectedItemIndex) ColorBlue else ColorGray
                     )
                 }
             )
@@ -145,11 +150,12 @@ fun NavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ScreenRoutes.Statistics.route
+        startDestination = ScreenRoutes.Home.route
     ) {
         composable(ScreenRoutes.Home.route) {
             bottomNavState.value = true
 //            HomeScreen(navController, bottomNavState)
+            HomeScreen(bottomNavState)
         }
         composable(ScreenRoutes.Statistics.route) {
             bottomNavState.value = true

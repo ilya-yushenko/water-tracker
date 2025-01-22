@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
 
+    <string name="next">Next</string>
+    <string name="units">Units</string>
+    <string name="metric">Metric</string>
+    <string name="imperial">Imperial</string>
+    <string name="volume_oz">oz</string>
+    <string name="volume_ml">ml</string>
+
+    <!--Titles screen -->
+    <string name="title_screen_hydration">Hydration</string>
+
     <!--Root Screen-->
     <string name="tab_home">Home</string>
     <string name="tab_statistics">Statistics</string>
     <string name="tab_settings">Settings</string>
+
+    <!--Home Screen-->
+    <string name="home_screen_today_log">Today's Log</string>
+
+    <!--Add Hydration BottomSheet-->
+    <string name="add_hydration_bottom_sheet_contribution">Hydration Contribution</string>
+    <string name="add_hydration_bottom_sheet_hydration">%1$s hydration</string>
+    <string name="add_hydration_bottom_sheet_volume">%1$s Volume (%2$s)</string>
+
+    <string name="add_hydration_bottom_sheet_add">Add</string>
+
 </resources>

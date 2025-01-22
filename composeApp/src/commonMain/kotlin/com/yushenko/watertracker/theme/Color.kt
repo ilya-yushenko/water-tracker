@@ -55,3 +55,22 @@ val textColor
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFE6E9EA)
     else Color(0xFF193238)
+
+
+
+val ColorBackground = Color(0xFFF9FAFB)
+
+val ColorWhite = Color(0xFFFFFFFF)
+val ColorWhite80 = Color(0xccffffff)
+val ColorWhite10 = Color(0x1affffff)
+
+//val ColorGray = Color(0xFF4B5563)
+val ColorBlack = Color(0xff000000)
+val ColorGray = Color(0xFF6B7280)
+
+val ColorBlue = Color(0xFF1A73FF)
+val ColorBlue10 = Color(0x1a1a73ff)
+
+val ColorBlueGradient = Color(0xFF2B7FFF)
+
+val ColorBlueWhite = Color(0xFFEFF6FF)
