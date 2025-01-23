@@ -9,12 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,12 +32,9 @@ import androidx.compose.ui.unit.sp
 import com.yushenko.watertracker.theme.ColorBlack
 import com.yushenko.watertracker.theme.ColorBlue10
 import com.yushenko.watertracker.theme.ColorGray
+import com.yushenko.watertracker.theme.ColorGrayWhite
 import com.yushenko.watertracker.theme.ColorWhite
-import com.yushenko.watertracker.theme.ColorWhite80
 import com.yushenko.watertracker.theme.Colors
-import com.yushenko.watertracker.theme.backgroundColor
-import com.yushenko.watertracker.theme.surfaceColor
-import com.yushenko.watertracker.theme.textColor
 import com.yushenko.watertracker.ui.base.BottomSheet
 import com.yushenko.watertracker.ui.base.Units
 import com.yushenko.watertracker.ui.components.ButtonIcon
@@ -44,17 +42,18 @@ import com.yushenko.watertracker.ui.components.DrinkModel
 import com.yushenko.watertracker.ui.components.VolumeItem
 import com.yushenko.watertracker.ui.components.VolumeModel
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import watertracker.composeapp.generated.resources.Inter_Bold
 import watertracker.composeapp.generated.resources.Inter_Medium
 import watertracker.composeapp.generated.resources.Inter_Regular
+import watertracker.composeapp.generated.resources.Inter_SemiBold
 import watertracker.composeapp.generated.resources.Res
 import watertracker.composeapp.generated.resources.add_hydration_bottom_sheet_contribution
 import watertracker.composeapp.generated.resources.add_hydration_bottom_sheet_hydration
-import watertracker.composeapp.generated.resources.add_hydration_bottom_sheet_volume
 import watertracker.composeapp.generated.resources.ic_confirm
-import watertracker.composeapp.generated.resources.volume_ml
-import watertracker.composeapp.generated.resources.volume_oz
+import watertracker.composeapp.generated.resources.ic_minus
+import watertracker.composeapp.generated.resources.ic_plus
 
 
 @Composable
@@ -64,21 +63,20 @@ fun AddHydrationBottomSheet(
     onDismiss: () -> Unit
 ) {
 
-    val hydrationGoal: Float = 2000f
-    val waterVolume: Float = 100f
+    val waterVolume = 250
     var selectedUnit by remember { mutableStateOf(Units.Metric) }
-    var waterGoal by remember { mutableStateOf(waterVolume) }
+    var currentVolume by remember { mutableStateOf(waterVolume) }
 
     val volumes = listOf(
-        VolumeModel(100f),
-        VolumeModel(200f),
-        VolumeModel(300f),
-        VolumeModel(500f)
+        VolumeModel(100),
+        VolumeModel(200),
+        VolumeModel(300),
+        VolumeModel(500)
     )
 
     BottomSheet(
         modifier = Modifier
-            .fillMaxHeight(0.45f),
+            .fillMaxHeight(0.5f),
         backgroundColor = ColorWhite,
         roundCorners = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
         onDismiss = onDismiss,
@@ -140,16 +138,75 @@ fun AddHydrationBottomSheet(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = {
+                        currentVolume--
+                    }) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_minus),
+                            contentDescription = "Minus",
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(ColorGrayWhite)
+                                .size(48.dp)
+                                .padding(10.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Text(
+                        text = "$currentVolume",
+                        fontSize = 48.sp,
+                        color = ColorBlack,
+                        textAlign = TextAlign.Start,
+                        fontFamily = FontFamily(Font(Res.font.Inter_SemiBold)),
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "ml",
+                        fontSize = 20.sp,
+                        color = ColorBlack,
+                        textAlign = TextAlign.Start,
+                        fontFamily = FontFamily(Font(Res.font.Inter_Medium)),
+                        modifier = Modifier
+                            .align(Alignment.Bottom)
+                            .padding(bottom = 6.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    IconButton(onClick = {
+                        currentVolume++
+                    }) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_plus),
+                            contentDescription = "Plus",
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(28.dp))
+                                .background(ColorGrayWhite)
+                                .size(48.dp)
+                                .padding(10.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
                 LazyRow(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(volumes) { model ->
+                    itemsIndexed(volumes) { index, model ->
                         VolumeItem(
                             model = model,
                             onClick = { model ->
-                                waterGoal = model.volume
+                                currentVolume = model.volume
                             }
                         )
+                        if (index < volumes.size - 1) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
                     }
                 }
 
@@ -157,7 +214,10 @@ fun AddHydrationBottomSheet(
 
                 ButtonIcon(
                     iconRes = Res.drawable.ic_confirm,
-                    onClick = onDismiss
+                    onClick = {
+                        onAddClick(currentVolume)
+                        onDismiss()
+                    }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
