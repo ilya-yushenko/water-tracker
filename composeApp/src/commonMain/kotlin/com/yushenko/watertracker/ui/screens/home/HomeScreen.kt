@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -19,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontFamily
@@ -36,11 +38,15 @@ import com.yushenko.watertracker.ui.components.DrinkItem
 import com.yushenko.watertracker.ui.components.DrinkModel
 import com.yushenko.watertracker.ui.components.StoryItem
 import com.yushenko.watertracker.ui.components.StoryModel
+import com.yushenko.watertracker.ui.components.TitleScreen
 import com.yushenko.watertracker.ui.components.WaterCircularIndicator
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 import watertracker.composeapp.generated.resources.Inter_Medium
 import watertracker.composeapp.generated.resources.Inter_SemiBold
 import watertracker.composeapp.generated.resources.Res
+import watertracker.composeapp.generated.resources.home_screen_story
+import watertracker.composeapp.generated.resources.home_screen_title
 import watertracker.composeapp.generated.resources.ic_quick_coffee
 import watertracker.composeapp.generated.resources.ic_quick_juice
 import watertracker.composeapp.generated.resources.ic_quick_milk
@@ -137,6 +143,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(ColorBlueGradient, ColorBlue),
@@ -146,19 +153,7 @@ fun HomeScreen(
                     )
             ) {
                 Column {
-                    Text(
-                        text = "Today's Log",
-                        fontSize = 24.sp,
-                        textAlign = TextAlign.Start,
-                        fontFamily = FontFamily(Font(Res.font.Inter_SemiBold)),
-                        color = ColorWhite,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 62.dp)
-                            .padding(horizontal = 16.dp)
-                    )
+                    TitleScreen(stringResource(Res.string.home_screen_title))
 
                     Text(
                         text = "15 February 2025",
@@ -208,7 +203,7 @@ fun HomeScreen(
 
         item {
             Text(
-                text = "Today's story",
+                text = stringResource(Res.string.home_screen_story),
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
                 fontFamily = FontFamily(Font(Res.font.Inter_SemiBold)),

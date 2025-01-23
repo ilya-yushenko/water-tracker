@@ -67,7 +67,7 @@ val ColorWhite10 = Color(0x1affffff)
 //val ColorGray = Color(0xFF4B5563)
 val ColorBlack = Color(0xff000000)
 val ColorGray = Color(0xFF6B7280)
-val ColorGrayWhite = Color(0xFFF3F4F6)
+val ColorGrayWhite = Color(0xFFE5E7EB)
 
 val ColorBlue = Color(0xFF1A73FF)
 val ColorBlue10 = Color(0x1a1a73ff)
