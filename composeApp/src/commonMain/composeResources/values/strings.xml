@@ -8,9 +8,6 @@
     <string name="volume_oz">oz</string>
     <string name="volume_ml">ml</string>
 
-    <!--Titles screen -->
-    <string name="title_screen_hydration">Hydration</string>
-
     <!--Root Screen-->
     <string name="tab_home">Home</string>
     <string name="tab_statistics">Statistics</string>
@@ -38,5 +35,23 @@
     <string name="settings_screen_about">About</string>
     <string name="settings_screen_app_version">App Version</string>
     <string name="settings_screen_privacy_policy">Privacy Policy</string>
+
+    <!--Statistics Screen-->
+    <string name="statistics_screen_title">Statistics</string>
+    <string name="statistics_screen_day">Day</string>
+    <string name="statistics_screen_week">Week</string>
+    <string name="statistics_screen_month">Month</string>
+    <string name="statistics_screen_year">Year</string>
+    <string name="statistics_screen_by_last_days">Last 7 days</string>
+    <string name="statistics_screen_by_week">By week</string>
+    <string name="statistics_screen_by_month">By month</string>
+    <string name="statistics_screen_by_year">By year</string>
+    <string name="statistics_screen_all">All</string>
+    <string name="statistics_screen_average">Average</string>
+    <string name="statistics_screen_best_day">Best day</string>
+    <string name="statistics_screen_in_just_one">In just one</string>
+    <string name="statistics_screen_goal">Goal</string>
+    <string name="statistics_screen_distribution">Distribution</string>
+
 
 </resources>

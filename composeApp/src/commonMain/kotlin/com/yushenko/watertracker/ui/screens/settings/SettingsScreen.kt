@@ -1,30 +1,22 @@
 package com.yushenko.watertracker.ui.screens.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.yushenko.watertracker.theme.ColorBackground
-import com.yushenko.watertracker.theme.ColorBlue
-import com.yushenko.watertracker.theme.ColorBlueGradient
 import com.yushenko.watertracker.ui.components.SettingsChangeItem
 import com.yushenko.watertracker.ui.components.SettingsGroupItem
 import com.yushenko.watertracker.ui.components.SettingsSwitchItem
-import com.yushenko.watertracker.ui.components.TitleScreen
+import com.yushenko.watertracker.ui.components.HeaderScreen
 import org.jetbrains.compose.resources.stringResource
 import watertracker.composeapp.generated.resources.Res
 import watertracker.composeapp.generated.resources.ic_settings_goal
@@ -54,27 +46,7 @@ fun SettingsScreen() {
             .fillMaxSize()
             .background(ColorBackground)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(ColorBlueGradient, ColorBlue),
-                        start = Offset(0f, 0f),
-                        end = Offset(1000f, 0f)
-                    )
-                )
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                TitleScreen(
-                    text = stringResource(Res.string.settings_screen_title)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
+        HeaderScreen(stringResource(Res.string.settings_screen_title))
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

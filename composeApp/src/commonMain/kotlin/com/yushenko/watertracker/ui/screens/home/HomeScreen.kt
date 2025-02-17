@@ -1,8 +1,6 @@
 package com.yushenko.watertracker.ui.screens.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -20,9 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,15 +24,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yushenko.watertracker.theme.ColorBackground
 import com.yushenko.watertracker.theme.ColorBlack
-import com.yushenko.watertracker.theme.ColorBlue
-import com.yushenko.watertracker.theme.ColorBlueGradient
 import com.yushenko.watertracker.theme.ColorWhite
 import com.yushenko.watertracker.theme.ColorWhite80
 import com.yushenko.watertracker.ui.components.DrinkItem
 import com.yushenko.watertracker.ui.components.DrinkModel
+import com.yushenko.watertracker.ui.components.HeaderScreen
 import com.yushenko.watertracker.ui.components.StoryItem
 import com.yushenko.watertracker.ui.components.StoryModel
-import com.yushenko.watertracker.ui.components.TitleScreen
 import com.yushenko.watertracker.ui.components.WaterCircularIndicator
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
@@ -140,43 +132,26 @@ fun HomeScreen(
             .background(ColorBackground)
     ) {
         item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(ColorBlueGradient, ColorBlue),
-                            start = Offset(0f, 0f),
-                            end = Offset(1000f, 0f)
-                        )
-                    )
-            ) {
-                Column {
-                    TitleScreen(stringResource(Res.string.home_screen_title))
-
-                    Text(
-                        text = "15 February 2025",
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Start,
-                        fontFamily = FontFamily(Font(Res.font.Inter_Medium)),
-                        color = ColorWhite80,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp)
-                            .padding(horizontal = 16.dp)
-                    )
-
-                    WaterCircularIndicator(
-                        modifier = Modifier
-                            .padding(vertical = 40.dp)
-                            .fillMaxWidth(0.65f)
-                            .align(Alignment.CenterHorizontally),
-                        currentWater = 1200, targetWater = 2500
-                    )
-                }
+            HeaderScreen(stringResource(Res.string.home_screen_title)) {
+                Text(
+                    text = "15 February 2025",
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Start,
+                    fontFamily = FontFamily(Font(Res.font.Inter_Medium)),
+                    color = ColorWhite80,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                WaterCircularIndicator(
+                    modifier = Modifier
+                        .padding(vertical = 40.dp)
+                        .fillMaxWidth(0.65f)
+                        .align(Alignment.CenterHorizontally),
+                    currentWater = 1200, targetWater = 2500
+                )
             }
         }
 
@@ -202,6 +177,7 @@ fun HomeScreen(
         }
 
         item {
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = stringResource(Res.string.home_screen_story),
                 fontSize = 18.sp,
@@ -212,7 +188,6 @@ fun HomeScreen(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp)
                     .padding(horizontal = 16.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))

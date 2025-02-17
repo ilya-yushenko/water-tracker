@@ -33,6 +33,7 @@ import com.yushenko.watertracker.theme.ColorGray
 import com.yushenko.watertracker.theme.Colors
 import com.yushenko.watertracker.ui.screens.home.HomeScreen
 import com.yushenko.watertracker.ui.screens.settings.SettingsScreen
+import com.yushenko.watertracker.ui.screens.statistics.StatisticsScreen
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -161,6 +162,7 @@ fun NavigationHost(
         composable(ScreenRoutes.Statistics.route) {
             bottomNavState.value = true
 //            StatisticsScreen(navController)
+            StatisticsScreen()
         }
         composable(ScreenRoutes.Settings.route) {
             bottomNavState.value = true
