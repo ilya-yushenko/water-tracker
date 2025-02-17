@@ -31,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.yushenko.watertracker.theme.ColorBlue
 import com.yushenko.watertracker.theme.ColorGray
 import com.yushenko.watertracker.theme.Colors
+import com.yushenko.watertracker.ui.screens.history.HistoryScreen
 import com.yushenko.watertracker.ui.screens.home.HomeScreen
 import com.yushenko.watertracker.ui.screens.settings.SettingsScreen
 import com.yushenko.watertracker.ui.screens.statistics.StatisticsScreen
@@ -39,9 +40,11 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import watertracker.composeapp.generated.resources.Inter_Medium
 import watertracker.composeapp.generated.resources.Res
+import watertracker.composeapp.generated.resources.ic_history
 import watertracker.composeapp.generated.resources.ic_home
 import watertracker.composeapp.generated.resources.ic_settings
 import watertracker.composeapp.generated.resources.ic_statistics
+import watertracker.composeapp.generated.resources.tab_history
 import watertracker.composeapp.generated.resources.tab_home
 import watertracker.composeapp.generated.resources.tab_settings
 import watertracker.composeapp.generated.resources.tab_statistics
@@ -92,6 +95,12 @@ fun BottomNavigationBar(navController: NavController) {
             icon = painterResource(Res.drawable.ic_statistics),
             hasNews = false,
             route = "statistics"
+        ),
+        BottomNavigationItem(
+            title = stringResource(Res.string.tab_history),
+            icon = painterResource(Res.drawable.ic_history),
+            hasNews = false,
+            route = "history"
         ),
         BottomNavigationItem(
             title = stringResource(Res.string.tab_settings),
@@ -164,6 +173,11 @@ fun NavigationHost(
 //            StatisticsScreen(navController)
             StatisticsScreen()
         }
+        composable(ScreenRoutes.History.route) {
+            bottomNavState.value = true
+//            HistoryScreen(navController)
+            HistoryScreen()
+        }
         composable(ScreenRoutes.Settings.route) {
             bottomNavState.value = true
 //            SettingsScreen(navController)
@@ -176,5 +190,6 @@ fun NavigationHost(
 enum class ScreenRoutes(val route: String) {
     Home("home"),
     Statistics("statistics"),
+    History("history"),
     Settings("settings")
 }

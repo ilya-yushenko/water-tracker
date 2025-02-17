@@ -11,6 +11,7 @@
     <!--Root Screen-->
     <string name="tab_home">Home</string>
     <string name="tab_statistics">Statistics</string>
+    <string name="tab_history">History</string>
     <string name="tab_settings">Settings</string>
 
     <!--Home Screen-->
@@ -52,6 +53,9 @@
     <string name="statistics_screen_in_just_one">In just one</string>
     <string name="statistics_screen_goal">Goal</string>
     <string name="statistics_screen_distribution">Distribution</string>
+
+    <!--History Screen-->
+    <string name="history_screen_title">History</string>
 
 
 </resources>
