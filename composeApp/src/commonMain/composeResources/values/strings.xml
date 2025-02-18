@@ -17,6 +17,7 @@
     <!--Home Screen-->
     <string name="home_screen_title">Today's Log</string>
     <string name="home_screen_story">Today's story</string>
+    <string name="home_screen_add">Add</string>
 
     <!--Add Hydration BottomSheet-->
     <string name="add_hydration_bottom_sheet_contribution">Hydration Contribution</string>
