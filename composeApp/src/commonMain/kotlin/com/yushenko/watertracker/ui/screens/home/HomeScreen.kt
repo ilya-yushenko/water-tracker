@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +25,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -140,10 +141,27 @@ fun HomeScreen(
 
     val isSheetVisible = remember { mutableStateOf(false) }
     val selectedDrink = remember { mutableStateOf<DrinkModel?>(null) }
-
     bottomNavState.value = !isSheetVisible.value
 
     val lazyListState = rememberLazyListState()
+
+    val maxToolbarHeight = 450.dp
+    val minToolbarHeight = 106.dp
+    val maxToolbarPx = with(LocalDensity.current) { maxToolbarHeight.roundToPx().toFloat() }
+    val minToolbarPx = with(LocalDensity.current) { minToolbarHeight.roundToPx().toFloat() }
+    val maxCollapseRange = maxToolbarPx - minToolbarPx
+    val scrollOffset = remember {
+        derivedStateOf {
+            val firstItemIndex = lazyListState.firstVisibleItemIndex
+            val firstItemOffset = lazyListState.firstVisibleItemScrollOffset
+            (firstItemIndex * lazyListState.layoutInfo.viewportSize.height + firstItemOffset).toFloat()
+        }
+    }
+    val collapseFraction = (scrollOffset.value / maxCollapseRange).coerceIn(0f, 1f)
+    val currentToolbarHeightPx = maxToolbarPx - (maxCollapseRange * collapseFraction)
+    val currentToolbarHeightDp = with(LocalDensity.current) { currentToolbarHeightPx.toDp() }
+
+
     var previousOffset by remember { mutableStateOf(0) }
     var fabVisible by remember { mutableStateOf(true) }
 
@@ -167,89 +185,103 @@ fun HomeScreen(
         animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
     )
 
-    Box {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(ColorBackground)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ColorBackground)
+    ) {
+        LazyColumn(
+            state = lazyListState,
+            modifier = Modifier.fillMaxSize()
         ) {
-            LazyColumn(
-                state = lazyListState,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    HeaderScreen(stringResource(Res.string.home_screen_title)) {
-                        Text(
-                            text = "15 February 2025",
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Start,
-                            fontFamily = FontFamily(Font(Res.font.Inter_Medium)),
-                            color = ColorWhite80,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
+            item {
+                Spacer(modifier = Modifier.height(maxToolbarHeight))
+            }
+            item {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(ColorWhite),
+                    contentPadding = PaddingValues(horizontal = 8.dp)
+                ) {
+                    items(drinks) { model ->
+                        DrinkItem(
+                            label = model.label,
+                            volume = model.volume,
+                            iconRes = model.iconRes,
+                            onClick = {
+                                selectedDrink.value = model
+                                isSheetVisible.value = true
+                            }
                         )
-                        WaterCircularIndicator(
-                            modifier = Modifier
-                                .padding(vertical = 40.dp)
-                                .fillMaxWidth(0.65f)
-                                .align(Alignment.CenterHorizontally),
-                            currentWater = 1200, targetWater = 2500
-                        )
-                    }
-                }
-
-                item {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(ColorWhite),
-                        contentPadding = PaddingValues(horizontal = 8.dp)
-                    ) {
-                        items(drinks) { model ->
-                            DrinkItem(
-                                label = model.label,
-                                volume = model.volume,
-                                iconRes = model.iconRes,
-                                onClick = {
-                                    selectedDrink.value = model
-                                    isSheetVisible.value = true
-                                }
-                            )
-                        }
-                    }
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        text = stringResource(Res.string.home_screen_story),
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Start,
-                        fontFamily = FontFamily(Font(Res.font.Inter_SemiBold)),
-                        color = ColorBlack,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    repeat(storyLog.size) { index ->
-                        StoryItem(
-                            label = storyLog[index].label,
-                            volume = storyLog[index].volume,
-                            time = storyLog[index].time,
-                            iconRes = storyLog[index].iconRes,
-                            onClickDelete = {}
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
+
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = stringResource(Res.string.home_screen_story),
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Start,
+                    fontFamily = FontFamily(Font(Res.font.Inter_SemiBold)),
+                    color = ColorBlack,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                repeat(storyLog.size) { index ->
+                    StoryItem(
+                        label = storyLog[index].label,
+                        volume = storyLog[index].volume,
+                        time = storyLog[index].time,
+                        iconRes = storyLog[index].iconRes,
+                        onClickDelete = {}
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+        }
+
+        HeaderScreen(
+            label = stringResource(Res.string.home_screen_title),
+            modifier = Modifier
+                .height(currentToolbarHeightDp)
+                .fillMaxWidth()
+        ) {
+            val circleScale = 1f - 0.5f * collapseFraction
+            val circleAlpha = 1f - collapseFraction
+            Text(
+                text = "15 February 2025",
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start,
+                fontFamily = FontFamily(Font(Res.font.Inter_Medium)),
+                color = ColorWhite80,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .graphicsLayer {
+                        alpha = circleAlpha
+                    }
+            )
+            WaterCircularIndicator(
+                modifier = Modifier
+                    .padding(vertical = 40.dp)
+                    .fillMaxWidth(0.65f)
+                    .align(Alignment.CenterHorizontally)
+                    .graphicsLayer {
+                        scaleX = circleScale
+                        scaleY = circleScale
+                        alpha = circleAlpha
+                    },
+                currentWater = 1200, targetWater = 2500
+            )
         }
 
         FloatingActionButton(

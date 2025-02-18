@@ -1,6 +1,5 @@
 package com.yushenko.watertracker.ui.screens.root
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.navigation.NavController
@@ -30,7 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yushenko.watertracker.theme.ColorBlue
 import com.yushenko.watertracker.theme.ColorGray
-import com.yushenko.watertracker.theme.Colors
+import com.yushenko.watertracker.theme.ColorWhite
 import com.yushenko.watertracker.ui.screens.history.HistoryScreen
 import com.yushenko.watertracker.ui.screens.home.HomeScreen
 import com.yushenko.watertracker.ui.screens.settings.SettingsScreen
@@ -110,7 +108,9 @@ fun BottomNavigationBar(navController: NavController) {
         )
     )
 
-    BottomNavigation {
+    BottomNavigation(
+        backgroundColor = ColorWhite
+    ) {
         var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
         items.forEachIndexed { index, item ->
             BottomNavigationItem(
@@ -118,7 +118,6 @@ fun BottomNavigationBar(navController: NavController) {
                 onClick = {
                     selectedItemIndex = index
                     navController.navigate(item.route) {
-//                        popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
                     }
                 },
@@ -148,7 +147,8 @@ fun BottomNavigationBar(navController: NavController) {
                         text = item.title,
                         color = if (index == selectedItemIndex) ColorBlue else ColorGray
                     )
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
         }
     }

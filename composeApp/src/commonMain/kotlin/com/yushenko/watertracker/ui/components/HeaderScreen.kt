@@ -28,11 +28,12 @@ import watertracker.composeapp.generated.resources.Res
 
 @Composable
 fun HeaderScreen(
-    text: String,
+    label: String,
+    modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
             .background(
@@ -44,7 +45,7 @@ fun HeaderScreen(
             )
     ) {
         Text(
-            text = text,
+            text = label,
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
             fontFamily = FontFamily(Font(Res.font.Inter_SemiBold)),

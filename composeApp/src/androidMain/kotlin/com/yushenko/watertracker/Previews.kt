@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.yushenko.watertracker.ui.screens.history.HistoryScreen
-import com.yushenko.watertracker.ui.screens.home.CollapsingHeaderScreen
 import com.yushenko.watertracker.ui.screens.home.HomeScreen
 import com.yushenko.watertracker.ui.screens.root.RootScreen
 import com.yushenko.watertracker.ui.screens.settings.SettingsScreen
@@ -15,13 +14,6 @@ import com.yushenko.watertracker.ui.screens.statistics.StatisticsScreen
 @Composable
 fun RootScreenPreview() {
     RootScreen()
-}
-
-@SuppressLint("UnrememberedMutableState")
-@Preview
-@Composable
-fun CollapsingHeaderPreview() {
-    CollapsingHeaderScreen()
 }
 
 @SuppressLint("UnrememberedMutableState")

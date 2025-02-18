@@ -13,10 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.yushenko.watertracker.theme.ColorBackground
+import com.yushenko.watertracker.ui.components.HeaderScreen
 import com.yushenko.watertracker.ui.components.SettingsChangeItem
 import com.yushenko.watertracker.ui.components.SettingsGroupItem
 import com.yushenko.watertracker.ui.components.SettingsSwitchItem
-import com.yushenko.watertracker.ui.components.HeaderScreen
 import org.jetbrains.compose.resources.stringResource
 import watertracker.composeapp.generated.resources.Res
 import watertracker.composeapp.generated.resources.ic_settings_goal
@@ -46,7 +46,10 @@ fun SettingsScreen() {
             .fillMaxSize()
             .background(ColorBackground)
     ) {
-        HeaderScreen(stringResource(Res.string.settings_screen_title))
+        HeaderScreen(
+            label = stringResource(Res.string.settings_screen_title),
+            modifier = Modifier.height(106.dp)
+        )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

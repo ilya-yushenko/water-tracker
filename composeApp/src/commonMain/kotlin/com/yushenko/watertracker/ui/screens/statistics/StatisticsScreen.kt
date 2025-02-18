@@ -285,7 +285,10 @@ fun StatisticsScreen() {
             .fillMaxSize()
             .background(ColorBackground)
     ) {
-        HeaderScreen(stringResource(Res.string.statistics_screen_title))
+        HeaderScreen(
+            label = stringResource(Res.string.statistics_screen_title),
+            modifier = Modifier.height(106.dp)
+        )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
