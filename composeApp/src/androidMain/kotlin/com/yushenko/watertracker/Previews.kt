@@ -20,7 +20,7 @@ fun RootScreenPreview() {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen({})
 }
 
 @SuppressLint("UnrememberedMutableState")

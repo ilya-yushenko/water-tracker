@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,6 +51,7 @@ import com.yushenko.watertracker.ui.components.HeaderScreen
 import com.yushenko.watertracker.ui.components.StoryItem
 import com.yushenko.watertracker.ui.components.StoryModel
 import com.yushenko.watertracker.ui.components.WaterCircularIndicator
+import com.yushenko.watertracker.ui.screens.root.BottomSheetContent
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import watertracker.composeapp.generated.resources.Inter_Medium
@@ -68,6 +70,7 @@ import watertracker.composeapp.generated.resources.ic_quick_water
 @Composable
 fun HomeScreen(
 //    navController: NavController,
+    onOpenBottomSheet: (BottomSheetContent) -> Unit,
     bottomNavState: MutableState<Boolean> = mutableStateOf(false),
 ) {
 
@@ -136,183 +139,176 @@ fun HomeScreen(
         )
     )
 
-//    val isSheetVisible = remember { mutableStateOf(true) }
-//    val selectedDrink = remember { mutableStateOf<DrinkModel?>(drinks[0]) }
-
     val isSheetVisible = remember { mutableStateOf(false) }
     val selectedDrink = remember { mutableStateOf<DrinkModel?>(null) }
     bottomNavState.value = !isSheetVisible.value
 
-    val lazyListState = rememberLazyListState()
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val lazyListState = rememberLazyListState()
 
-    val maxToolbarHeight = 450.dp
-    val minToolbarHeight = 106.dp
-    val maxToolbarPx = with(LocalDensity.current) { maxToolbarHeight.roundToPx().toFloat() }
-    val minToolbarPx = with(LocalDensity.current) { minToolbarHeight.roundToPx().toFloat() }
-    val maxCollapseRange = maxToolbarPx - minToolbarPx
-    val scrollOffset = remember {
-        derivedStateOf {
-            val firstItemIndex = lazyListState.firstVisibleItemIndex
-            val firstItemOffset = lazyListState.firstVisibleItemScrollOffset
-            (firstItemIndex * lazyListState.layoutInfo.viewportSize.height + firstItemOffset).toFloat()
-        }
-    }
-    val collapseFraction = (scrollOffset.value / maxCollapseRange).coerceIn(0f, 1f)
-    val currentToolbarHeightPx = maxToolbarPx - (maxCollapseRange * collapseFraction)
-    val currentToolbarHeightDp = with(LocalDensity.current) { currentToolbarHeightPx.toDp() }
-
-
-    var previousOffset by remember { mutableStateOf(0) }
-    var fabVisible by remember { mutableStateOf(true) }
-
-    LaunchedEffect(lazyListState.firstVisibleItemScrollOffset) {
-        val currentOffset = lazyListState.firstVisibleItemScrollOffset
-        fabVisible = when {
-            currentOffset < previousOffset -> true
-            currentOffset - previousOffset > 20 -> false
-            else -> fabVisible
-        }
-        previousOffset = currentOffset
-    }
-
-    val fabAlpha by animateFloatAsState(
-        targetValue = if (fabVisible) 1f else 0f,
-        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
-    )
-
-    val fabTranslationY by animateFloatAsState(
-        targetValue = if (fabVisible) 0f else 100f,
-        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(ColorBackground)
-    ) {
-        LazyColumn(
-            state = lazyListState,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(maxToolbarHeight))
+        val maxToolbarHeight = maxHeight * 0.65f
+        val minToolbarHeight = 106.dp
+        val maxToolbarPx = with(LocalDensity.current) { maxToolbarHeight.roundToPx().toFloat() }
+        val minToolbarPx = with(LocalDensity.current) { minToolbarHeight.roundToPx().toFloat() }
+        val maxCollapseRange = maxToolbarPx - minToolbarPx
+        val scrollOffset = remember {
+            derivedStateOf {
+                val firstItemIndex = lazyListState.firstVisibleItemIndex
+                val firstItemOffset = lazyListState.firstVisibleItemScrollOffset
+                (firstItemIndex * lazyListState.layoutInfo.viewportSize.height + firstItemOffset).toFloat()
             }
-            item {
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(ColorWhite),
-                    contentPadding = PaddingValues(horizontal = 8.dp)
-                ) {
-                    items(drinks) { model ->
-                        DrinkItem(
-                            label = model.label,
-                            volume = model.volume,
-                            iconRes = model.iconRes,
-                            onClick = {
-                                selectedDrink.value = model
-                                isSheetVisible.value = true
-                            }
+        }
+        val collapseFraction = (scrollOffset.value / maxCollapseRange).coerceIn(0f, 1f)
+        val currentToolbarHeightPx = maxToolbarPx - (maxCollapseRange * collapseFraction)
+        val currentToolbarHeightDp = with(LocalDensity.current) { currentToolbarHeightPx.toDp() }
+
+
+        var previousOffset by remember { mutableStateOf(0) }
+        var fabVisible by remember { mutableStateOf(true) }
+
+        LaunchedEffect(lazyListState.firstVisibleItemScrollOffset) {
+            val currentOffset = lazyListState.firstVisibleItemScrollOffset
+            fabVisible = when {
+                currentOffset < previousOffset -> true
+                currentOffset - previousOffset > 20 -> false
+                else -> fabVisible
+            }
+            previousOffset = currentOffset
+        }
+
+        val fabAlpha by animateFloatAsState(
+            targetValue = if (fabVisible) 1f else 0f,
+            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+        )
+
+        val fabTranslationY by animateFloatAsState(
+            targetValue = if (fabVisible) 0f else 100f,
+            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(ColorBackground)
+        ) {
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(maxToolbarHeight))
+                }
+                item {
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(ColorWhite),
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        items(drinks) { model ->
+                            DrinkItem(
+                                label = model.label,
+                                volume = model.volume,
+                                iconRes = model.iconRes,
+                                onClick = {
+                                    selectedDrink.value = model
+                                    onOpenBottomSheet(
+                                        BottomSheetContent.TrackHydration(
+                                            selectedDrink.value!!
+                                        )
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = stringResource(Res.string.home_screen_story),
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Start,
+                        fontFamily = FontFamily(Font(Res.font.Inter_SemiBold)),
+                        color = ColorBlack,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    repeat(storyLog.size) { index ->
+                        StoryItem(
+                            label = storyLog[index].label,
+                            volume = storyLog[index].volume,
+                            time = storyLog[index].time,
+                            iconRes = storyLog[index].iconRes,
+                            onClickDelete = {}
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
 
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
+            HeaderScreen(
+                label = stringResource(Res.string.home_screen_title),
+                modifier = Modifier
+                    .height(currentToolbarHeightDp)
+                    .fillMaxWidth()
+            ) {
+                val circleScale = 1f - 0.5f * collapseFraction
+                val circleAlpha = 1f - collapseFraction
                 Text(
-                    text = stringResource(Res.string.home_screen_story),
-                    fontSize = 18.sp,
+                    text = "15 February 2025",
+                    fontSize = 16.sp,
                     textAlign = TextAlign.Start,
-                    fontFamily = FontFamily(Font(Res.font.Inter_SemiBold)),
-                    color = ColorBlack,
+                    fontFamily = FontFamily(Font(Res.font.Inter_Medium)),
+                    color = ColorWhite80,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
+                        .graphicsLayer {
+                            alpha = circleAlpha
+                        }
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                repeat(storyLog.size) { index ->
-                    StoryItem(
-                        label = storyLog[index].label,
-                        volume = storyLog[index].volume,
-                        time = storyLog[index].time,
-                        iconRes = storyLog[index].iconRes,
-                        onClickDelete = {}
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+                Spacer(modifier = Modifier.weight(1f))
+                WaterCircularIndicator(
+                    modifier = Modifier
+                        .padding(vertical = 40.dp)
+                        .fillMaxWidth(0.65f)
+                        .align(Alignment.CenterHorizontally)
+                        .graphicsLayer {
+                            scaleX = circleScale
+                            scaleY = circleScale
+                            alpha = circleAlpha
+                        },
+                    currentWater = 1200, targetWater = 2500
+                )
+                Spacer(modifier = Modifier.weight(1f))
             }
-        }
 
-        HeaderScreen(
-            label = stringResource(Res.string.home_screen_title),
-            modifier = Modifier
-                .height(currentToolbarHeightDp)
-                .fillMaxWidth()
-        ) {
-            val circleScale = 1f - 0.5f * collapseFraction
-            val circleAlpha = 1f - collapseFraction
-            Text(
-                text = "15 February 2025",
-                fontSize = 16.sp,
-                textAlign = TextAlign.Start,
-                fontFamily = FontFamily(Font(Res.font.Inter_Medium)),
-                color = ColorWhite80,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+            FloatingActionButton(
+                onClick = {
+                    selectedDrink.value = drinks[0]
+                    onOpenBottomSheet(BottomSheetContent.TrackHydration(selectedDrink.value!!))
+                },
+                backgroundColor = ColorBlue,
+                contentColor = ColorWhite,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .size(64.dp)
+                    .align(Alignment.BottomCenter)
+                    .offset(y = (-8).dp)
                     .graphicsLayer {
-                        alpha = circleAlpha
+                        alpha = fabAlpha
+                        translationY = fabTranslationY
                     }
-            )
-            WaterCircularIndicator(
-                modifier = Modifier
-                    .padding(vertical = 40.dp)
-                    .fillMaxWidth(0.65f)
-                    .align(Alignment.CenterHorizontally)
-                    .graphicsLayer {
-                        scaleX = circleScale
-                        scaleY = circleScale
-                        alpha = circleAlpha
-                    },
-                currentWater = 1200, targetWater = 2500
-            )
-        }
-
-        FloatingActionButton(
-            onClick = {
-                selectedDrink.value = drinks[0]
-                isSheetVisible.value = true
-            },
-            backgroundColor = ColorBlue,
-            contentColor = ColorWhite,
-            modifier = Modifier
-                .size(64.dp)
-                .align(Alignment.BottomCenter)
-                .offset(y = (-8).dp)
-                .graphicsLayer {
-                    alpha = fabAlpha
-                    translationY = fabTranslationY
-                }
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-        }
-    }
-
-    if (isSheetVisible.value) {
-        AddHydrationBottomSheet(
-            selectedDrink.value!!,
-            onAddClick = {
-
-            },
-            onDismiss = {
-                isSheetVisible.value = false
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
             }
-        )
+        }
     }
 }
