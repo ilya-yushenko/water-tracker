@@ -2,10 +2,12 @@ package com.yushenko.watertracker.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -21,37 +23,50 @@ import com.yushenko.watertracker.theme.ColorBlack
 import com.yushenko.watertracker.theme.ColorBlue
 import com.yushenko.watertracker.theme.ColorBlueWhite
 import com.yushenko.watertracker.theme.ColorGray
+import com.yushenko.watertracker.theme.ColorWhite
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import watertracker.composeapp.generated.resources.Inter_Medium
 import watertracker.composeapp.generated.resources.Res
 
-data class DrinkModel(val label: String, val volume: String, val iconRes: DrawableResource)
+data class DrinkModel(
+    val label: String,
+    val volume: String,
+    val iconRes: DrawableResource,
+    val isSelected: Boolean = false,
+)
 
 @Composable
 fun DrinkItem(
     label: String,
     volume: String,
     iconRes: DrawableResource,
+    isSelected: Boolean = false,
     onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .padding(vertical = 26.dp, horizontal = 8.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick),
+            .clip(RoundedCornerShape(12.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            painter = painterResource(iconRes),
-            contentDescription = null,
-            tint = ColorBlue,
+        Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(32.dp))
-                .background(ColorBlueWhite)
-                .padding(16.dp),
-        )
+                .background(if (isSelected) ColorBlue else ColorBlueWhite)
+                .size(64.dp)
+                .clickable(onClick = onClick)
+        ) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = "Drink",
+                tint = if (isSelected) ColorWhite else ColorBlue,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(32.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = label,

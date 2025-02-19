@@ -39,7 +39,7 @@ import com.yushenko.watertracker.theme.ColorWhite
 import com.yushenko.watertracker.ui.components.DrinkModel
 import com.yushenko.watertracker.ui.screens.history.HistoryScreen
 import com.yushenko.watertracker.ui.screens.home.HomeScreen
-import com.yushenko.watertracker.ui.screens.home.TrackHydrationBottomSheet
+import com.yushenko.watertracker.ui.screens.home.TrackHydrationScreen
 import com.yushenko.watertracker.ui.screens.settings.SettingsScreen
 import com.yushenko.watertracker.ui.screens.statistics.StatisticsScreen
 import kotlinx.coroutines.launch
@@ -90,7 +90,7 @@ fun RootScreen() {
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetContent = {
             when (currentBottomSheetContent) {
-                is BottomSheetContent.TrackHydration -> TrackHydrationBottomSheet(
+                is BottomSheetContent.TrackHydration -> TrackHydrationScreen(
                     data = (currentBottomSheetContent as BottomSheetContent.TrackHydration).data,
                     onDismiss = {
                         coroutineScope.launch { sheetState.hide() }
@@ -214,10 +214,7 @@ fun NavigationHost(
         composable(ScreenRoutes.Home.route) {
             bottomNavState.value = true
 //            HomeScreen(navController, bottomNavState)
-            HomeScreen(
-                onOpenBottomSheet = onOpenBottomSheet,
-                bottomNavState = bottomNavState
-            )
+            HomeScreen(onOpenBottomSheet = onOpenBottomSheet)
         }
         composable(ScreenRoutes.Statistics.route) {
             bottomNavState.value = true

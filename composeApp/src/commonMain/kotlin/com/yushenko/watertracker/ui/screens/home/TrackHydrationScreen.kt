@@ -52,7 +52,7 @@ import watertracker.composeapp.generated.resources.ic_minus
 import watertracker.composeapp.generated.resources.ic_plus
 
 @Composable
-fun TrackHydrationBottomSheet(
+fun TrackHydrationScreen(
     data: DrinkModel,
     onDismiss: () -> Unit
 ) {

@@ -25,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -71,77 +70,25 @@ import watertracker.composeapp.generated.resources.ic_quick_water
 fun HomeScreen(
 //    navController: NavController,
     onOpenBottomSheet: (BottomSheetContent) -> Unit,
-    bottomNavState: MutableState<Boolean> = mutableStateOf(false),
 ) {
-
     val drinks = listOf(
-        DrinkModel(
-            label = "Water",
-            volume = "250 ml",
-            iconRes = Res.drawable.ic_quick_water
-        ),
-        DrinkModel(
-            label = "Coffee",
-            volume = "200 ml",
-            iconRes = Res.drawable.ic_quick_coffee
-        ),
-        DrinkModel(
-            label = "Tea",
-            volume = "200 ml",
-            iconRes = Res.drawable.ic_quick_tea
-        ),
-        DrinkModel(
-            label = "Smoothie",
-            volume = "200 ml",
-            iconRes = Res.drawable.ic_quick_smoothie
-        ),
-        DrinkModel(
-            label = "Juice",
-            volume = "200 ml",
-            iconRes = Res.drawable.ic_quick_juice
-        ),
-        DrinkModel(
-            label = "Milk",
-            volume = "200 ml",
-            iconRes = Res.drawable.ic_quick_milk
-        ),
-        DrinkModel(
-            label = "Soda",
-            volume = "200 ml",
-            iconRes = Res.drawable.ic_quick_soda
-        ),
+        DrinkModel("Water", "250 ml", Res.drawable.ic_quick_water),
+        DrinkModel("Coffee", "200 ml", Res.drawable.ic_quick_coffee),
+        DrinkModel("Tea", "200 ml", Res.drawable.ic_quick_tea),
+        DrinkModel("Smoothie", "200 ml", Res.drawable.ic_quick_smoothie),
+        DrinkModel("Juice", "200 ml", Res.drawable.ic_quick_juice),
+        DrinkModel("Milk", "200 ml", Res.drawable.ic_quick_milk),
+        DrinkModel("Soda", "200 ml", Res.drawable.ic_quick_soda)
     )
 
-    val storyLog: List<StoryModel> = listOf(
-        StoryModel(
-            label = "Wather",
-            volume = "300 ml",
-            time = "14:30",
-            iconRes = Res.drawable.ic_quick_water
-        ),
-        StoryModel(
-            label = "Coffee",
-            volume = "200 ml",
-            time = "11:15",
-            iconRes = Res.drawable.ic_quick_coffee
-        ),
-        StoryModel(
-            label = "Tea",
-            volume = "250 ml",
-            time = "09:00",
-            iconRes = Res.drawable.ic_quick_tea
-        ),
-        StoryModel(
-            label = "Wather",
-            volume = "450 ml",
-            time = "08:00",
-            iconRes = Res.drawable.ic_quick_water
-        )
+    val storyLog = listOf(
+        StoryModel("Wather", "300 ml", "14:30", Res.drawable.ic_quick_water),
+        StoryModel("Coffee", "200 ml", "11:15", Res.drawable.ic_quick_coffee),
+        StoryModel("Tea", "250 ml", "09:00", Res.drawable.ic_quick_tea),
+        StoryModel("Wather", "450 ml", "08:00", Res.drawable.ic_quick_water)
     )
 
-    val isSheetVisible = remember { mutableStateOf(false) }
     val selectedDrink = remember { mutableStateOf<DrinkModel?>(null) }
-    bottomNavState.value = !isSheetVisible.value
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val lazyListState = rememberLazyListState()
@@ -159,9 +106,8 @@ fun HomeScreen(
             }
         }
         val collapseFraction = (scrollOffset.value / maxCollapseRange).coerceIn(0f, 1f)
-        val currentToolbarHeightPx = maxToolbarPx - (maxCollapseRange * collapseFraction)
-        val currentToolbarHeightDp = with(LocalDensity.current) { currentToolbarHeightPx.toDp() }
-
+        val currentToolbarHeightDp =
+            with(LocalDensity.current) { (maxToolbarPx - (maxCollapseRange * collapseFraction)).toDp() }
 
         var previousOffset by remember { mutableStateOf(0) }
         var fabVisible by remember { mutableStateOf(true) }
@@ -186,43 +132,29 @@ fun HomeScreen(
             animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(ColorBackground)
-        ) {
-            LazyColumn(
-                state = lazyListState,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(maxToolbarHeight))
-                }
+        Box(modifier = Modifier.fillMaxSize().background(ColorBackground)) {
+            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+                item { Spacer(modifier = Modifier.height(maxToolbarHeight)) }
                 item {
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(ColorWhite),
+                        modifier = Modifier.fillMaxWidth().background(ColorWhite),
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
-                        items(drinks) { model ->
+                        items(drinks, key = { it.label }) { model ->
                             DrinkItem(
                                 label = model.label,
                                 volume = model.volume,
                                 iconRes = model.iconRes,
                                 onClick = {
                                     selectedDrink.value = model
-                                    onOpenBottomSheet(
-                                        BottomSheetContent.TrackHydration(
-                                            selectedDrink.value!!
-                                        )
-                                    )
+                                    selectedDrink.value?.let {
+                                        onOpenBottomSheet(BottomSheetContent.TrackHydration(it))
+                                    }
                                 }
                             )
                         }
                     }
                 }
-
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(
@@ -233,18 +165,15 @@ fun HomeScreen(
                         color = ColorBlack,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-
-                    repeat(storyLog.size) { index ->
+                    storyLog.forEach { model ->
                         StoryItem(
-                            label = storyLog[index].label,
-                            volume = storyLog[index].volume,
-                            time = storyLog[index].time,
-                            iconRes = storyLog[index].iconRes,
+                            label = model.label,
+                            volume = model.volume,
+                            time = model.time,
+                            iconRes = model.iconRes,
                             onClickDelete = {}
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -254,9 +183,7 @@ fun HomeScreen(
 
             HeaderScreen(
                 label = stringResource(Res.string.home_screen_title),
-                modifier = Modifier
-                    .height(currentToolbarHeightDp)
-                    .fillMaxWidth()
+                modifier = Modifier.height(currentToolbarHeightDp).fillMaxWidth()
             ) {
                 val circleScale = 1f - 0.5f * collapseFraction
                 val circleAlpha = 1f - collapseFraction
@@ -268,20 +195,13 @@ fun HomeScreen(
                     color = ColorWhite80,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .graphicsLayer {
-                            alpha = circleAlpha
-                        }
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                        .graphicsLayer { alpha = circleAlpha }
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 WaterCircularIndicator(
-                    modifier = Modifier
-                        .padding(vertical = 40.dp)
-                        .fillMaxWidth(0.65f)
-                        .align(Alignment.CenterHorizontally)
-                        .graphicsLayer {
+                    modifier = Modifier.padding(vertical = 40.dp).fillMaxWidth(0.65f)
+                        .align(Alignment.CenterHorizontally).graphicsLayer {
                             scaleX = circleScale
                             scaleY = circleScale
                             alpha = circleAlpha
@@ -293,15 +213,16 @@ fun HomeScreen(
 
             FloatingActionButton(
                 onClick = {
-                    selectedDrink.value = drinks[0]
-                    onOpenBottomSheet(BottomSheetContent.TrackHydration(selectedDrink.value!!))
+                    if (fabVisible) {
+                        selectedDrink.value = drinks[0]
+                        selectedDrink.value?.let {
+                            onOpenBottomSheet(BottomSheetContent.TrackHydration(it))
+                        }
+                    }
                 },
                 backgroundColor = ColorBlue,
                 contentColor = ColorWhite,
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.BottomCenter)
-                    .offset(y = (-8).dp)
+                modifier = Modifier.size(64.dp).align(Alignment.BottomCenter).offset(y = (-8).dp)
                     .graphicsLayer {
                         alpha = fabAlpha
                         translationY = fabTranslationY
