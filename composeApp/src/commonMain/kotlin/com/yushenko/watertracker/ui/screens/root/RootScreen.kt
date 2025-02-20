@@ -3,13 +3,11 @@ package com.yushenko.watertracker.ui.screens.root
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Badge
 import androidx.compose.material.BadgedBox
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
-import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -24,10 +22,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -70,32 +66,24 @@ data class BottomNavigationItem(
 
 @Composable
 fun RootScreen() {
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmValueChange = { newState ->
-            newState != ModalBottomSheetValue.Expanded
-        }
-    )
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
     val bottomNavState = remember { mutableStateOf(true) }
 
     var currentBottomSheetContent by remember { mutableStateOf<BottomSheetContent?>(null) }
 
-    ModalBottomSheetLayout(
+    BottomSheetHost(
         sheetState = sheetState,
-        sheetElevation = 0.dp,
-        scrimColor = Color.Black.copy(alpha = 0.32f),
-        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        sheetContent = {
-            when (currentBottomSheetContent) {
-                is BottomSheetContent.TrackHydration -> TrackHydrationScreen(
-                    onDismiss = {
-                        coroutineScope.launch { sheetState.hide() }
-                    }
-                )
-
-                else -> Unit
+        currentBottomSheetContent = currentBottomSheetContent,
+        sheetContent = { sheetData ->
+            when (sheetData) {
+                is BottomSheetContent.TrackHydration -> {
+                    TrackHydrationScreen(
+                        onDismiss = { coroutineScope.launch { sheetState.hide() } }
+                    )
+                }
             }
         }
     ) {
@@ -107,8 +95,7 @@ fun RootScreen() {
             }
         ) { innerPadding ->
             Box(
-                modifier = Modifier
-                    .padding(innerPadding)
+                modifier = Modifier.padding(innerPadding)
             ) {
                 NavigationHost(
                     navController = navController,

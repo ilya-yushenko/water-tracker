@@ -42,9 +42,9 @@ fun HydrationItem(
     ) {
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(24.dp))
+                .clip(RoundedCornerShape(32.dp))
                 .background(if (isSelected) ColorBlue else ColorBlueWhite)
-                .size(48.dp)
+                .size(56.dp)
                 .clickable(onClick = onClick)
         ) {
             Icon(
@@ -53,7 +53,7 @@ fun HydrationItem(
                 tint = if (isSelected) ColorWhite else ColorBlue,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .size(24.dp)
+                    .size(28.dp)
             )
         }
         Text(

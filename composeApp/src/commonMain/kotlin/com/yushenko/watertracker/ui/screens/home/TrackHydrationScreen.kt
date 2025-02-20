@@ -1,8 +1,11 @@
 package com.yushenko.watertracker.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +18,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +32,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,14 +88,24 @@ fun TrackHydrationScreen(
         VolumeModel(500)
     )
 
-    val waterVolume = 250
-    var currentVolume by remember { mutableStateOf(waterVolume) }
+    var currentVolume by remember { mutableStateOf(250) }
     var selectedDrink by remember { mutableStateOf(drinks[0]) }
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(ColorWhite),
+            .background(ColorWhite)
+            .clickable(
+                onClick = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                },
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ),
     ) {
         val screenHeight = maxHeight
         val targetHeight = screenHeight * 0.5f
@@ -134,7 +155,7 @@ fun TrackHydrationScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(modifier = Modifier.weight(0.35f))
+                Spacer(modifier = Modifier.weight(0.25f))
                 IconButton(onClick = {
                     currentVolume--
                 }) {
@@ -152,12 +173,33 @@ fun TrackHydrationScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = "$currentVolume",
-                        fontSize = 48.sp,
-                        color = ColorBlack,
-                        textAlign = TextAlign.Start,
-                        fontFamily = FontFamily(Font(Res.font.Inter_SemiBold))
+                    BasicTextField(
+                        value = currentVolume.toString(),
+                        onValueChange = { newValue ->
+                            if (newValue.length <= 4) {
+                                if (currentVolume == 0) {
+                                    val trimmedValue = newValue.trimEnd('0')
+                                    currentVolume = trimmedValue.toIntOrNull() ?: 0
+                                } else {
+                                    val trimmedValue = newValue.trimStart('0')
+                                    currentVolume = trimmedValue.toIntOrNull() ?: 0
+                                }
+                            }
+                        },
+                        textStyle = TextStyle(
+                            fontSize = 48.sp,
+                            color = ColorBlack,
+                            textAlign = TextAlign.Start,
+                            fontFamily = FontFamily(Font(Res.font.Inter_SemiBold))
+                        ),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.align(Alignment.Bottom).width(IntrinsicSize.Min)
+                            .onFocusChanged { focusState ->
+                                if (!focusState.isFocused) {
+                                    keyboardController?.hide()
+                                }
+                            }
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -185,7 +227,7 @@ fun TrackHydrationScreen(
                             .padding(10.dp)
                     )
                 }
-                Spacer(modifier = Modifier.weight(0.35f))
+                Spacer(modifier = Modifier.weight(0.25f))
             }
             Spacer(modifier = Modifier.weight(0.2f))
             LazyRow(
@@ -216,6 +258,13 @@ fun TrackHydrationScreen(
                 }
             )
             Spacer(modifier = Modifier.weight(0.25f))
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            keyboardController?.hide()
+            focusManager.clearFocus()
         }
     }
 }
