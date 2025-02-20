@@ -147,9 +147,6 @@ fun HomeScreen(
                                 iconRes = model.iconRes,
                                 onClick = {
                                     selectedDrink.value = model
-                                    selectedDrink.value?.let {
-                                        onOpenBottomSheet(BottomSheetContent.TrackHydration(it))
-                                    }
                                 }
                             )
                         }
@@ -216,7 +213,7 @@ fun HomeScreen(
                     if (fabVisible) {
                         selectedDrink.value = drinks[0]
                         selectedDrink.value?.let {
-                            onOpenBottomSheet(BottomSheetContent.TrackHydration(it))
+                            onOpenBottomSheet(BottomSheetContent.TrackHydration)
                         }
                     }
                 },

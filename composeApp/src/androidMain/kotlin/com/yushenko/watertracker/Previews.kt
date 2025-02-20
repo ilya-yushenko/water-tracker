@@ -31,8 +31,7 @@ fun HomeScreenPreview() {
 @Preview
 @Composable
 fun TrackHydrationScreen() {
-    val data = DrinkModel("Water", "250 ml", Res.drawable.ic_quick_water)
-    TrackHydrationScreen(data, {})
+    TrackHydrationScreen({})
 }
 
 @SuppressLint("UnrememberedMutableState")

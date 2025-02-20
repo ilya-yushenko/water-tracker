@@ -36,7 +36,6 @@ import androidx.navigation.compose.rememberNavController
 import com.yushenko.watertracker.theme.ColorBlue
 import com.yushenko.watertracker.theme.ColorGray
 import com.yushenko.watertracker.theme.ColorWhite
-import com.yushenko.watertracker.ui.components.DrinkModel
 import com.yushenko.watertracker.ui.screens.history.HistoryScreen
 import com.yushenko.watertracker.ui.screens.home.HomeScreen
 import com.yushenko.watertracker.ui.screens.home.TrackHydrationScreen
@@ -58,7 +57,7 @@ import watertracker.composeapp.generated.resources.tab_settings
 import watertracker.composeapp.generated.resources.tab_statistics
 
 sealed class BottomSheetContent {
-    data class TrackHydration(val data: DrinkModel) : BottomSheetContent()
+    data object TrackHydration : BottomSheetContent()
 }
 
 data class BottomNavigationItem(
@@ -91,7 +90,6 @@ fun RootScreen() {
         sheetContent = {
             when (currentBottomSheetContent) {
                 is BottomSheetContent.TrackHydration -> TrackHydrationScreen(
-                    data = (currentBottomSheetContent as BottomSheetContent.TrackHydration).data,
                     onDismiss = {
                         coroutineScope.launch { sheetState.hide() }
                     }
