@@ -43,12 +43,12 @@ fun BarChartItem(
             .width(widthColumn)
     ) {
         Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = "${model.value} ml",
-            fontSize = 8.sp,
-            color = ColorGray,
-            fontFamily = FontFamily(Font(Res.font.Inter_Regular))
-        )
+//        Text(
+//            text = "${model.value} ml",
+//            fontSize = 8.sp,
+//            color = ColorGray,
+//            fontFamily = FontFamily(Font(Res.font.Inter_Regular))
+//        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()

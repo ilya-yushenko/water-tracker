@@ -22,6 +22,7 @@ import com.yushenko.watertracker.theme.ColorBlue
 import com.yushenko.watertracker.theme.ColorGrayDark
 import com.yushenko.watertracker.theme.ColorGrayWhite
 import com.yushenko.watertracker.theme.ColorWhite
+import com.yushenko.watertracker.ui.screens.statistics.DrinkType
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
@@ -30,23 +31,24 @@ import watertracker.composeapp.generated.resources.Res
 
 
 data class TypeDrinkModel(
-    val period: String,
-    val isSelected: Boolean = false,
+    val label: String,
+    val type: DrinkType,
     val iconRes: DrawableResource? = null
 )
 
 @Composable
 fun TypeDrinkItem(
     model: TypeDrinkModel,
-    onClick: (TypeDrinkModel) -> Unit
+    isSelected: Boolean = false,
+    onClick: (DrinkType) -> Unit
 ) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(15.dp))
-            .background(if (model.isSelected) ColorBlue else ColorGrayWhite)
+            .background(if (isSelected) ColorBlue else ColorGrayWhite)
             .height(height = 30.dp)
             .defaultMinSize(minWidth = 80.dp)
-            .clickable(onClick = { onClick(model) }),
+            .clickable(onClick = { onClick(model.type) }),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.weight(1f))
@@ -55,15 +57,15 @@ fun TypeDrinkItem(
             Icon(
                 painter = painterResource(model.iconRes),
                 contentDescription = null,
-                tint = if (model.isSelected) ColorWhite else ColorGrayDark,
+                tint = if (isSelected) ColorWhite else ColorGrayDark,
                 modifier = Modifier
                     .size(20.dp)
             )
         }
         Text(
-            text = model.period,
+            text = model.label,
             fontSize = 14.sp,
-            color = if (model.isSelected) ColorWhite else ColorGrayDark,
+            color = if (isSelected) ColorWhite else ColorGrayDark,
             fontFamily = FontFamily(Font(Res.font.Inter_Medium))
         )
         Spacer(modifier = Modifier.width(16.dp))
