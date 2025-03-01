@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="statistics_screen_title">Statistics</string>
+    <string name="statistics_screen_day">Day</string>
+    <string name="statistics_screen_week">Week</string>
+    <string name="statistics_screen_month">Month</string>
+    <string name="statistics_screen_year">Year</string>
+    <string name="statistics_screen_by_last_days">Last 7 days</string>
+    <string name="statistics_screen_by_week">By week</string>
+    <string name="statistics_screen_by_month">By month</string>
+    <string name="statistics_screen_by_year">By year</string>
+    <string name="statistics_screen_all">All</string>
+    <string name="statistics_screen_average">Average</string>
+    <string name="statistics_screen_best_day">Best day</string>
+    <string name="statistics_screen_in_just_one">In just one</string>
+    <string name="statistics_screen_goal">Goal</string>
+    <string name="statistics_screen_distribution">Distribution</string>
+</resources>

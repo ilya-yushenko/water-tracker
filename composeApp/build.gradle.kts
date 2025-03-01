@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -35,6 +34,12 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation(project(":feature:hydration"))
+            implementation(project(":feature:statistics"))
+            implementation(project(":feature:history"))
+            implementation(project(":feature:settings"))
+            implementation(project(":di"))
+            implementation(project(":common"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)

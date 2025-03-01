@@ -1,62 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-
-    <string name="next">Next</string>
-    <string name="units">Units</string>
-    <string name="metric">Metric</string>
-    <string name="imperial">Imperial</string>
-    <string name="volume_oz">oz</string>
-    <string name="volume_ml">ml</string>
-
-    <!--Root Screen-->
     <string name="tab_home">Home</string>
     <string name="tab_statistics">Statistics</string>
     <string name="tab_history">History</string>
     <string name="tab_settings">Settings</string>
-
-    <!--Home Screen-->
-    <string name="home_screen_title">Today's Log</string>
-    <string name="home_screen_story">Today's story</string>
-    <string name="home_screen_add">Add</string>
-
-    <!--Add Hydration BottomSheet-->
-    <string name="add_hydration_bottom_sheet_contribution">Hydration Contribution</string>
-    <string name="add_hydration_bottom_sheet_hydration">%1$s hydration</string>
-    <string name="add_hydration_bottom_sheet_volume">%1$s Volume (%2$s)</string>
-    <string name="add_hydration_bottom_sheet_add">Add</string>
-
-    <!--Settings Screen-->
-    <string name="settings_screen_title">Settings</string>
-    <string name="settings_screen_current_goal">Current Goal</string>
-    <string name="settings_screen_daily_goal">Daily goal</string>
-    <string name="settings_screen_reminder_interval">Reminder interval</string>
-    <string name="settings_screen_personalization">Personalization</string>
-    <string name="settings_screen_dark_theme">Dark theme</string>
-    <string name="settings_screen_language">Language</string>
-    <string name="settings_screen_metric_imperial">Metric/Imperial</string>
-    <string name="settings_screen_about">About</string>
-    <string name="settings_screen_app_version">App Version</string>
-    <string name="settings_screen_privacy_policy">Privacy Policy</string>
-
-    <!--Statistics Screen-->
-    <string name="statistics_screen_title">Statistics</string>
-    <string name="statistics_screen_day">Day</string>
-    <string name="statistics_screen_week">Week</string>
-    <string name="statistics_screen_month">Month</string>
-    <string name="statistics_screen_year">Year</string>
-    <string name="statistics_screen_by_last_days">Last 7 days</string>
-    <string name="statistics_screen_by_week">By week</string>
-    <string name="statistics_screen_by_month">By month</string>
-    <string name="statistics_screen_by_year">By year</string>
-    <string name="statistics_screen_all">All</string>
-    <string name="statistics_screen_average">Average</string>
-    <string name="statistics_screen_best_day">Best day</string>
-    <string name="statistics_screen_in_just_one">In just one</string>
-    <string name="statistics_screen_goal">Goal</string>
-    <string name="statistics_screen_distribution">Distribution</string>
-
-    <!--History Screen-->
-    <string name="history_screen_title">History</string>
-
-
 </resources>

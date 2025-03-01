@@ -28,4 +28,11 @@ dependencyResolutionManagement {
     }
 }
 
+include(":di")
+include(":common")
+include(":core:db")
 include(":composeApp")
+include(":feature:hydration")
+include(":feature:statistics")
+include(":feature:history")
+include(":feature:settings")

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="home_screen_title">Today's Log</string>
+    <string name="home_screen_story">Today's story</string>
+    <string name="home_screen_add">Add</string>
+</resources>

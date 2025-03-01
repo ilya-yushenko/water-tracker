@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="history_screen_title">History</string>
+    <string name="history_screen_story">Today's story</string>
+</resources>

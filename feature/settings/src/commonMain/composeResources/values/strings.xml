@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="settings_screen_title">Settings</string>
+    <string name="settings_screen_current_goal">Current Goal</string>
+    <string name="settings_screen_daily_goal">Daily goal</string>
+    <string name="settings_screen_reminder_interval">Reminder interval</string>
+    <string name="settings_screen_personalization">Personalization</string>
+    <string name="settings_screen_dark_theme">Dark theme</string>
+    <string name="settings_screen_language">Language</string>
+    <string name="settings_screen_metric_imperial">Metric/Imperial</string>
+    <string name="settings_screen_about">About</string>
+    <string name="settings_screen_app_version">App Version</string>
+    <string name="settings_screen_privacy_policy">Privacy Policy</string>
+</resources>

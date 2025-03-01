@@ -9,8 +9,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.yushenko.watertracker.theme.AppTheme
-import com.yushenko.watertracker.ui.screens.root.RootScreen
+import com.tide.common.AppTheme
+import com.yushenko.watertracker.ui.RootScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
