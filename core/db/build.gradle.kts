@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.realm.kotlin)
 }
 
 kotlin {
@@ -15,6 +16,9 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":common"))
             implementation(libs.realm.kotlin)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation("com.benasher44:uuid:0.8.4")
         }
     }
 }
