@@ -43,22 +43,18 @@ import androidx.compose.ui.unit.sp
 import com.tide.common.AppTypography
 import com.tide.common.appColorPalette
 import com.tide.common.components.ButtonIcon
-import com.tide.hydration.ui.components.DrinkModel
+import com.tide.hydration.di.hydrationDI
+import com.tide.hydration.model.toIconRes
 import com.tide.hydration.ui.components.HydrationItem
 import com.tide.hydration.ui.components.VolumeItem
 import com.tide.hydration.ui.components.VolumeModel
+import com.tide.hydration.viewmodel.HydrationViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.kodein.di.instance
 import watertracker.feature.hydration.generated.resources.Res
 import watertracker.feature.hydration.generated.resources.ic_confirm
 import watertracker.feature.hydration.generated.resources.ic_minus
 import watertracker.feature.hydration.generated.resources.ic_plus
-import watertracker.feature.hydration.generated.resources.ic_quick_coffee
-import watertracker.feature.hydration.generated.resources.ic_quick_juice
-import watertracker.feature.hydration.generated.resources.ic_quick_milk
-import watertracker.feature.hydration.generated.resources.ic_quick_smoothie
-import watertracker.feature.hydration.generated.resources.ic_quick_soda
-import watertracker.feature.hydration.generated.resources.ic_quick_tea
-import watertracker.feature.hydration.generated.resources.ic_quick_water
 
 
 @Composable
@@ -67,15 +63,8 @@ fun TrackHydrationScreen(
 ) {
     val colors = appColorPalette()
 
-    val drinks = listOf(
-        DrinkModel("Water", "250 ml", Res.drawable.ic_quick_water),
-        DrinkModel("Coffee", "200 ml", Res.drawable.ic_quick_coffee),
-        DrinkModel("Tea", "200 ml", Res.drawable.ic_quick_tea),
-        DrinkModel("Smoothie", "200 ml", Res.drawable.ic_quick_smoothie),
-        DrinkModel("Juice", "200 ml", Res.drawable.ic_quick_juice),
-        DrinkModel("Milk", "200 ml", Res.drawable.ic_quick_milk),
-        DrinkModel("Soda", "200 ml", Res.drawable.ic_quick_soda)
-    )
+    val viewModel: HydrationViewModel by hydrationDI.instance()
+    val drinks = viewModel.drinks
 
     val volumes = listOf(
         VolumeModel(100),
@@ -85,7 +74,7 @@ fun TrackHydrationScreen(
     )
 
     var currentVolume by remember { mutableStateOf(250) }
-    var selectedDrink by remember { mutableStateOf(drinks[0]) }
+    var selectedDrink by remember { mutableStateOf(drinks.value[0]) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -134,14 +123,14 @@ fun TrackHydrationScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = 8.dp)
             ) {
-                itemsIndexed(drinks, key = { _, item -> item.label }) { _, model ->
+                itemsIndexed(drinks.value, key = { _, item -> item.label }) { _, model ->
                     HydrationItem(
                         label = model.label,
-                        iconRes = model.iconRes,
+                        iconRes = model.drinkType.toIconRes(),
                         isSelected = selectedDrink == model,
                         onClick = {
                             selectedDrink = model
-                            currentVolume = model.volume.removeSuffix(" ml").toInt()
+                            currentVolume = model.volume
                         }
                     )
                 }
@@ -247,7 +236,11 @@ fun TrackHydrationScreen(
                     .padding(horizontal = 16.dp)
                     .height(48.dp),
                 onClick = {
-//                onAddClick(currentVolume)
+                    viewModel.addIntakeRecord(
+                        selectedDrink.drinkType,
+                        selectedDrink.label,
+                        currentVolume
+                    )
                     onDismiss()
                 }
             )

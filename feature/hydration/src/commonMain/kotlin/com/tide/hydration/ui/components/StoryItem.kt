@@ -23,13 +23,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tide.common.AppTypography
 import com.tide.common.appColorPalette
+import com.tide.hydration.model.HydrationDrinkIntakeRecord
+import com.tide.hydration.model.toIconRes
+import com.tide.hydration.utils.getFormattedTime
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import watertracker.feature.hydration.generated.resources.ic_delete
 
 data class StoryModel(
+    val recordId: String,
     val label: String,
-    val volume: String,
+    val volume: Int,
     val time: String,
     val iconRes: DrawableResource
 )
@@ -37,7 +41,7 @@ data class StoryModel(
 @Composable
 fun StoryItem(
     label: String,
-    volume: String,
+    volume: Int,
     time: String,
     iconRes: DrawableResource,
     onClickDelete: () -> Unit
@@ -78,7 +82,7 @@ fun StoryItem(
                 fontFamily = AppTypography.medium(),
             )
             Text(
-                text = volume,
+                text = "$volume ml",
                 fontSize = 14.sp,
                 color = colors.gray,
                 textAlign = TextAlign.Center,
@@ -107,3 +111,12 @@ fun StoryItem(
         Spacer(modifier = Modifier.width(16.dp))
     }
 }
+
+fun HydrationDrinkIntakeRecord.toStoryModel() =
+    StoryModel(
+        recordId = id,
+        label = name,
+        volume = amount,
+        time = getFormattedTime(createdAt),
+        iconRes = drinkType.toIconRes()
+    )

@@ -2,12 +2,15 @@ package com.tide.hydration.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -20,60 +23,49 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tide.common.AppTypography
 import com.tide.common.appColorPalette
-import com.tide.hydration.model.HydrationDrinkType
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-
-data class DrinkModel(
-    val label: String,
-    val drinkType: HydrationDrinkType,
-    val volume: Int
-)
+import watertracker.feature.hydration.generated.resources.Res
+import watertracker.feature.hydration.generated.resources.ic_plus
 
 @Composable
-fun DrinkItem(
-    label: String,
-    volume: Int,
-    iconRes: DrawableResource,
+fun StoryEmptyItem(
     onClick: () -> Unit
 ) {
     val colors = appColorPalette()
 
-    Column(
+    Row(
         modifier = Modifier
-            .padding(vertical = 26.dp, horizontal = 8.dp)
-            .clip(RoundedCornerShape(12.dp)),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .height(76.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surface)
+            .clickable(onClick = onClick),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        Spacer(modifier = Modifier.width(16.dp))
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(32.dp))
+                .clip(RoundedCornerShape(20.dp))
                 .background(colors.secondary)
-                .size(64.dp)
-                .clickable(onClick = onClick)
+                .size(40.dp)
         ) {
             Icon(
-                painter = painterResource(iconRes),
-                contentDescription = "Drink",
+                painter = painterResource(Res.drawable.ic_plus),
+                contentDescription = null,
                 tint = colors.blue,
-                modifier = Modifier
+                modifier = Modifier.size(20.dp)
                     .align(Alignment.Center)
-                    .size(32.dp)
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = label,
-            fontSize = 14.sp,
+            text = "Add record",
+            fontSize = 16.sp,
             textAlign = TextAlign.Center,
             fontFamily = AppTypography.medium(),
         )
-        Text(
-            text = "$volume ml",
-            fontSize = 12.sp,
-            color = colors.gray,
-            textAlign = TextAlign.Center,
-            fontFamily = AppTypography.medium(),
-        )
+        Spacer(modifier = Modifier.width(16.dp))
     }
 }

@@ -42,51 +42,32 @@ import com.tide.common.AppTypography
 import com.tide.common.BottomSheetType
 import com.tide.common.appColorPalette
 import com.tide.common.components.HeaderScreen
+import com.tide.hydration.di.hydrationDI
+import com.tide.hydration.model.toIconRes
 import com.tide.hydration.ui.components.DrinkItem
-import com.tide.hydration.ui.components.DrinkModel
+import com.tide.hydration.ui.components.StoryEmptyItem
 import com.tide.hydration.ui.components.StoryItem
-import com.tide.hydration.ui.components.StoryModel
 import com.tide.hydration.ui.components.WaterCircularIndicator
+import com.tide.hydration.viewmodel.HydrationViewModel
 import org.jetbrains.compose.resources.stringResource
+import org.kodein.di.instance
 import watertracker.feature.hydration.generated.resources.Res
 import watertracker.feature.hydration.generated.resources.home_screen_story
 import watertracker.feature.hydration.generated.resources.home_screen_title
-import watertracker.feature.hydration.generated.resources.ic_quick_coffee
-import watertracker.feature.hydration.generated.resources.ic_quick_juice
-import watertracker.feature.hydration.generated.resources.ic_quick_milk
-import watertracker.feature.hydration.generated.resources.ic_quick_smoothie
-import watertracker.feature.hydration.generated.resources.ic_quick_soda
-import watertracker.feature.hydration.generated.resources.ic_quick_tea
-import watertracker.feature.hydration.generated.resources.ic_quick_water
 
 
 @Composable
-fun HomeScreen(
+fun HydrationScreen(
 //    navController: NavController,
-    onOpenBottomSheet: (BottomSheetType) -> Unit,
+    onOpenBottomSheet: (BottomSheetType) -> Unit
 ) {
     val colors = appColorPalette()
 
-    val drinks = listOf(
-        DrinkModel("Water", "250 ml", Res.drawable.ic_quick_water),
-        DrinkModel("Coffee", "200 ml", Res.drawable.ic_quick_coffee),
-        DrinkModel("Tea", "200 ml", Res.drawable.ic_quick_tea),
-        DrinkModel("Smoothie", "200 ml", Res.drawable.ic_quick_smoothie),
-        DrinkModel("Juice", "200 ml", Res.drawable.ic_quick_juice),
-        DrinkModel("Milk", "200 ml", Res.drawable.ic_quick_milk),
-        DrinkModel("Soda", "200 ml", Res.drawable.ic_quick_soda)
-    )
-
-    val storyLog = listOf(
-        StoryModel("Wather", "300 ml", "14:30", Res.drawable.ic_quick_water),
-        StoryModel("Coffee", "200 ml", "11:15", Res.drawable.ic_quick_coffee),
-        StoryModel("Tea", "250 ml", "09:00", Res.drawable.ic_quick_tea),
-        StoryModel("Tea", "250 ml", "09:00", Res.drawable.ic_quick_tea),
-        StoryModel("Tea", "250 ml", "09:00", Res.drawable.ic_quick_tea),
-        StoryModel("Wather", "450 ml", "08:00", Res.drawable.ic_quick_water)
-    )
-
-    val selectedDrink = remember { mutableStateOf<DrinkModel?>(null) }
+    val viewModel: HydrationViewModel by hydrationDI.instance()
+    val dailyIntake = viewModel.dailyIntake
+    val currentData = viewModel.currentData
+    val drinks = viewModel.drinks
+    val storyLog = viewModel.storyLog
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val lazyListState = rememberLazyListState()
@@ -138,13 +119,17 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxWidth().background(colors.surface),
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
-                        items(drinks, key = { it.label }) { model ->
+                        items(drinks.value, key = { it.label }) { model ->
                             DrinkItem(
                                 label = model.label,
                                 volume = model.volume,
-                                iconRes = model.iconRes,
+                                iconRes = model.drinkType.toIconRes(),
                                 onClick = {
-                                    selectedDrink.value = model
+                                    viewModel.addIntakeRecord(
+                                        model.drinkType,
+                                        model.label,
+                                        model.volume
+                                    )
                                 }
                             )
                         }
@@ -162,15 +147,22 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    storyLog.forEach { model ->
-                        StoryItem(
-                            label = model.label,
-                            volume = model.volume,
-                            time = model.time,
-                            iconRes = model.iconRes,
-                            onClickDelete = {}
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+                    if (storyLog.value.isEmpty()) {
+                        StoryEmptyItem(onClick = {
+                            onOpenBottomSheet(BottomSheetType.TrackHydration)
+                        })
+                        Spacer(modifier = Modifier.height(32.dp))
+                    } else {
+                        storyLog.value.forEach { model ->
+                            StoryItem(
+                                label = model.label,
+                                volume = model.volume,
+                                time = model.time,
+                                iconRes = model.iconRes,
+                                onClickDelete = { viewModel.deleteIntakeRecord(model.recordId) }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }
@@ -182,7 +174,7 @@ fun HomeScreen(
                 val circleScale = 1f - 0.5f * collapseFraction
                 val circleAlpha = 1f - collapseFraction
                 Text(
-                    text = "15 February 2025",
+                    text = currentData.value,
                     fontSize = 16.sp,
                     textAlign = TextAlign.Start,
                     fontFamily = AppTypography.medium(),
@@ -200,7 +192,8 @@ fun HomeScreen(
                             scaleY = circleScale
                             alpha = circleAlpha
                         },
-                    currentWater = 1200, targetWater = 2500
+                    currentWater = dailyIntake.value,
+                    targetWater = 2500
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
@@ -208,10 +201,7 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick = {
                     if (fabVisible) {
-                        selectedDrink.value = drinks[0]
-                        selectedDrink.value?.let {
-                            onOpenBottomSheet(BottomSheetType.TrackHydration)
-                        }
+                        onOpenBottomSheet(BottomSheetType.TrackHydration)
                     }
                 },
                 backgroundColor = colors.blue,

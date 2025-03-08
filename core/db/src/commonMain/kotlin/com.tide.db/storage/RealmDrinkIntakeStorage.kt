@@ -1,32 +1,34 @@
 package com.tide.db.storage
 
 import com.tide.db.DatabaseProvider
-import com.tide.db.entity.BeverageEntity
-import com.tide.db.model.BeverageRecord
+import com.tide.db.entity.DrinkIntakeRecordEntity
+import com.tide.db.model.DrinkIntakeRecord
 import com.tide.db.model.DrinkType
 import io.realm.kotlin.Realm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import kotlin.math.min
 
-class RealmBeverageIntakeStorage(
+class RealmDrinkIntakeStorage(
     private val databaseProvider: DatabaseProvider
-) : BeverageIntakeStorage {
+) : DrinkIntakeStorage {
 
     private val database: Realm get() = databaseProvider.getRealmInstance()
 
     /**
      * Saving a new record
      */
-    override suspend fun addIntakeRecord(record: BeverageRecord) {
+    override suspend fun addIntakeRecord(drinkType: DrinkType, name: String, amount: Int) {
+        val now = Clock.System.now().toEpochMilliseconds()
         withContext(Dispatchers.Default) {
             database.write {
-                val entity = BeverageEntity().apply {
-                    drinkType = record.drinkType.name
-                    name = record.name
-                    amount = record.amount
-                    createdAt = record.createdAt
-                    updatedAt = record.updatedAt
+                val entity = DrinkIntakeRecordEntity().apply {
+                    this.drinkType = drinkType.name
+                    this.name = name
+                    this.amount = amount
+                    createdAt = now
+                    updatedAt = now
                 }
                 copyToRealm(entity)
             }
@@ -36,9 +38,9 @@ class RealmBeverageIntakeStorage(
     /**
      *  Get all records
      * */
-    override fun getIntakeRecords(): List<BeverageRecord> {
-        return database.query(BeverageEntity::class).find().map { entity ->
-            BeverageRecord(
+    override fun getIntakeRecords(): List<DrinkIntakeRecord> {
+        return database.query(DrinkIntakeRecordEntity::class).find().map { entity ->
+            DrinkIntakeRecord(
                 id = entity.id,
                 drinkType = DrinkType.valueOf(entity.drinkType),
                 name = entity.name,
@@ -52,13 +54,13 @@ class RealmBeverageIntakeStorage(
     /**
      * Getting records by pagination: returns "page" from results
      */
-    override fun getIntakeRecordsByPage(page: Int, pageSize: Int): List<BeverageRecord> {
-        val allRecords = database.query(BeverageEntity::class).find()
+    override fun getIntakeRecordsByPage(page: Int, pageSize: Int): List<DrinkIntakeRecord> {
+        val allRecords = database.query(DrinkIntakeRecordEntity::class).find()
         val fromIndex = page * pageSize
         if (fromIndex >= allRecords.size) return emptyList()
         val toIndex = min(fromIndex + pageSize, allRecords.size)
         return allRecords.subList(fromIndex, toIndex).map { entity ->
-            BeverageRecord(
+            DrinkIntakeRecord(
                 id = entity.id,
                 drinkType = DrinkType.valueOf(entity.drinkType),
                 name = entity.name,
@@ -75,14 +77,14 @@ class RealmBeverageIntakeStorage(
     override fun getIntakeRecordsByPeriod(
         startTimestamp: Long,
         endTimestamp: Long
-    ): List<BeverageRecord> {
+    ): List<DrinkIntakeRecord> {
         return database.query(
-            BeverageEntity::class,
+            DrinkIntakeRecordEntity::class,
             "createdAt >= $0 AND createdAt <= $1",
             startTimestamp,
             endTimestamp
         ).find().map { entity ->
-            BeverageRecord(
+            DrinkIntakeRecord(
                 id = entity.id,
                 drinkType = DrinkType.valueOf(entity.drinkType),
                 name = entity.name,
@@ -98,7 +100,7 @@ class RealmBeverageIntakeStorage(
      *
      * Assumes day period = 24 hours (86400000 ms)
      */
-    override fun getIntakeRecordsByDate(dayStartTimestamp: Long): List<BeverageRecord> {
+    override fun getIntakeRecordsByDate(dayStartTimestamp: Long): List<DrinkIntakeRecord> {
         val dayEnd = dayStartTimestamp + 86400000 - 1
         return getIntakeRecordsByPeriod(dayStartTimestamp, dayEnd)
     }
@@ -106,13 +108,13 @@ class RealmBeverageIntakeStorage(
     /**
      * Get records by drink type
      */
-    override fun getIntakeRecordsByDrinkType(drinkType: DrinkType): List<BeverageRecord> {
+    override fun getIntakeRecordsByDrinkType(drinkType: DrinkType): List<DrinkIntakeRecord> {
         return database.query(
-            BeverageEntity::class,
+            DrinkIntakeRecordEntity::class,
             "drinkType == $0",
             drinkType.name
         ).find().map { entity ->
-            BeverageRecord(
+            DrinkIntakeRecord(
                 id = entity.id,
                 drinkType = DrinkType.valueOf(entity.drinkType),
                 name = entity.name,
@@ -129,7 +131,8 @@ class RealmBeverageIntakeStorage(
     override suspend fun deleteIntakeRecord(recordId: String) {
         withContext(Dispatchers.Default) {
             database.write {
-                val record = query(BeverageEntity::class).find().firstOrNull { it.id == recordId }
+                val record =
+                    query(DrinkIntakeRecordEntity::class).find().firstOrNull { it.id == recordId }
                 if (record != null) {
                     delete(record)
                 }
@@ -149,7 +152,8 @@ class RealmBeverageIntakeStorage(
     ) {
         withContext(Dispatchers.Default) {
             database.write {
-                val record = query(BeverageEntity::class).find().firstOrNull { it.id == recordId }
+                val record =
+                    query(DrinkIntakeRecordEntity::class).find().firstOrNull { it.id == recordId }
                 if (record != null) {
                     record.drinkType = newDrinkType.name
                     record.name = newName

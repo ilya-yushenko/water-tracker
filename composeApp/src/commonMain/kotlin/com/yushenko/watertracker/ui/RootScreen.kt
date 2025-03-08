@@ -31,7 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tide.common.AppTypography
 import com.tide.common.BottomSheetType
 import com.tide.common.appColorPalette
-import com.tide.hydration.ui.HomeScreen
+import com.tide.hydration.ui.HydrationScreen
 import com.tide.hydration.ui.TrackHydrationScreen
 import com.tide.settings.ui.HistoryScreen
 import com.tide.settings.ui.SettingsScreen
@@ -192,7 +192,7 @@ fun NavigationHost(
         composable(ScreenRoutes.Home.route) {
             bottomNavState.value = true
 //            HomeScreen(navController, bottomNavState)
-            HomeScreen(onOpenBottomSheet = onOpenBottomSheet)
+            HydrationScreen(onOpenBottomSheet = onOpenBottomSheet)
         }
         composable(ScreenRoutes.Statistics.route) {
             bottomNavState.value = true

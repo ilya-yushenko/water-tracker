@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.tide.settings.ui.HistoryScreen
-import com.tide.hydration.ui.HomeScreen
+import com.tide.hydration.ui.HydrationScreen
 import com.tide.hydration.ui.TrackHydrationScreen
 import com.yushenko.watertracker.ui.RootScreen
 import com.tide.settings.ui.SettingsScreen
@@ -21,7 +21,7 @@ fun RootScreenPreview() {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen({})
+    HydrationScreen({})
 }
 
 @SuppressLint("UnrememberedMutableState")

@@ -1,6 +1,6 @@
 package com.tide.db.model
 
-data class BeverageRecord(
+data class DrinkIntakeRecord(
     val id: String,
     val drinkType: DrinkType,
     val name: String,
