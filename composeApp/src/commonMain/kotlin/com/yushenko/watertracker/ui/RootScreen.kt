@@ -33,7 +33,7 @@ import com.tide.common.BottomSheetType
 import com.tide.common.appColorPalette
 import com.tide.hydration.ui.HydrationScreen
 import com.tide.hydration.ui.TrackHydrationScreen
-import com.tide.settings.ui.HistoryScreen
+import com.tide.history.ui.HistoryScreen
 import com.tide.settings.ui.SettingsScreen
 import com.tide.settings.ui.StatisticsScreen
 import kotlinx.coroutines.launch

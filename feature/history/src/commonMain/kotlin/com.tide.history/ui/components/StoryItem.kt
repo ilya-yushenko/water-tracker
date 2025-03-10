@@ -1,4 +1,4 @@
-package com.tide.settings.ui.components
+package com.tide.history.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,14 +23,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tide.common.AppTypography
 import com.tide.common.appColorPalette
+import com.tide.history.model.HistoryDrinkIntakeRecord
+import com.tide.history.model.toIconRes
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import watertracker.feature.history.generated.resources.Res
 import watertracker.feature.history.generated.resources.ic_delete
 
 data class StoryModel(
+    val recordId: String,
     val label: String,
-    val volume: String,
+    val volume: Int,
     val time: String,
     val iconRes: DrawableResource
 )
@@ -38,7 +41,7 @@ data class StoryModel(
 @Composable
 fun StoryItem(
     label: String,
-    volume: String,
+    volume: Int,
     time: String,
     iconRes: DrawableResource,
     onClickDelete: () -> Unit
@@ -79,7 +82,7 @@ fun StoryItem(
                 fontFamily = AppTypography.medium(),
             )
             Text(
-                text = volume,
+                text = "$volume ml",
                 fontSize = 14.sp,
                 color = colors.gray,
                 textAlign = TextAlign.Center,
@@ -108,3 +111,13 @@ fun StoryItem(
         Spacer(modifier = Modifier.width(16.dp))
     }
 }
+
+fun HistoryDrinkIntakeRecord.toStoryModel() =
+    StoryModel(
+        recordId = id,
+        label = name,
+        volume = amount,
+//        time = getFormattedTime(createdAt),
+        time = "--:--",
+        iconRes = drinkType.toIconRes()
+    )

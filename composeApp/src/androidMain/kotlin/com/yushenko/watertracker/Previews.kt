@@ -3,7 +3,7 @@ package com.yushenko.watertracker
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.tide.settings.ui.HistoryScreen
+import com.tide.history.ui.HistoryScreen
 import com.tide.hydration.ui.HydrationScreen
 import com.tide.hydration.ui.TrackHydrationScreen
 import com.yushenko.watertracker.ui.RootScreen
