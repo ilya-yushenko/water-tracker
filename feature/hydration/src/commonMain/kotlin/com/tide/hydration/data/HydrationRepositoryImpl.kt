@@ -18,8 +18,11 @@ class HydrationRepositoryImpl(
         )
     }
 
-    override fun getIntakeRecordsByDate(dayStartTimestamp: Long): List<HydrationDrinkIntakeRecord> {
-        return intakeStorage.getIntakeRecordsByDate(dayStartTimestamp)
+    override fun getIntakeRecordsByPeriod(
+        startOfDay: Long,
+        endOfDay: Long
+    ): List<HydrationDrinkIntakeRecord> {
+        return intakeStorage.getIntakeRecordsByPeriod(startOfDay, endOfDay)
             .map { model -> model.toHydration() }
     }
 

@@ -7,8 +7,7 @@ interface DrinkIntakeStorage {
     suspend fun addIntakeRecord(drinkType: DrinkType, name: String, amount: Int)
     fun getIntakeRecords(): List<DrinkIntakeRecord>
     fun getIntakeRecordsByPage(page: Int, pageSize: Int): List<DrinkIntakeRecord>
-    fun getIntakeRecordsByPeriod(startTimestamp: Long, endTimestamp: Long): List<DrinkIntakeRecord>
-    fun getIntakeRecordsByDate(dayStartTimestamp: Long): List<DrinkIntakeRecord>
+    fun getIntakeRecordsByPeriod(startOfDay: Long, endOfDay: Long): List<DrinkIntakeRecord>
     fun getIntakeRecordsByDrinkType(drinkType: DrinkType): List<DrinkIntakeRecord>
     suspend fun deleteIntakeRecord(recordId: String)
     suspend fun updateIntakeRecord(

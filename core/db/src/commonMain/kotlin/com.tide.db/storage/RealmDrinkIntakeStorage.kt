@@ -75,14 +75,14 @@ class RealmDrinkIntakeStorage(
      * Get records for the specified period (start and end of the period in milliseconds)
      */
     override fun getIntakeRecordsByPeriod(
-        startTimestamp: Long,
-        endTimestamp: Long
+        startOfDay: Long,
+        endOfDay: Long
     ): List<DrinkIntakeRecord> {
         return database.query(
             DrinkIntakeRecordEntity::class,
             "createdAt >= $0 AND createdAt <= $1",
-            startTimestamp,
-            endTimestamp
+            startOfDay,
+            endOfDay
         ).find().map { entity ->
             DrinkIntakeRecord(
                 id = entity.id,
@@ -93,16 +93,6 @@ class RealmDrinkIntakeStorage(
                 updatedAt = entity.updatedAt
             )
         }
-    }
-
-    /**
-     * Get records for a specific day (assuming start of day in milliseconds)
-     *
-     * Assumes day period = 24 hours (86400000 ms)
-     */
-    override fun getIntakeRecordsByDate(dayStartTimestamp: Long): List<DrinkIntakeRecord> {
-        val dayEnd = dayStartTimestamp + 86400000 - 1
-        return getIntakeRecordsByPeriod(dayStartTimestamp, dayEnd)
     }
 
     /**

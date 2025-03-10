@@ -55,7 +55,7 @@ class HydrationViewModel(
 
     private fun loadDailyIntake() {
         viewModelScope.launch {
-            val todayStart = Clock.System.now().toEpochMilliseconds() - (24 * 60 * 60 * 1000L)
+            val todayStart = Clock.System.now().toEpochMilliseconds()
             val intakes = getDrinkIntakeRecordsByDateUseCase(todayStart)
             _dailyIntake.value = intakes.sumOf { it.amount }
             _storyLog.value = intakes
