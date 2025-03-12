@@ -25,7 +25,7 @@ import com.tide.common.AppTypography
 import com.tide.common.appColorPalette
 import com.tide.hydration.model.HydrationDrinkIntakeRecord
 import com.tide.hydration.model.toIconRes
-import com.tide.hydration.utils.getFormattedTime
+import com.tide.utils.getFormattedTime
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import watertracker.feature.hydration.generated.resources.ic_delete

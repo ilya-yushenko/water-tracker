@@ -1,4 +1,4 @@
-package com.tide.hydration.utils
+package com.tide.utils
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

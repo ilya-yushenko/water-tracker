@@ -11,7 +11,7 @@ import com.tide.hydration.model.HydrationDrinkType
 import com.tide.hydration.ui.components.DrinkModel
 import com.tide.hydration.ui.components.StoryModel
 import com.tide.hydration.ui.components.toStoryModel
-import com.tide.hydration.utils.getFormattedCurrentDate
+import com.tide.utils.getFormattedCurrentDate
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 

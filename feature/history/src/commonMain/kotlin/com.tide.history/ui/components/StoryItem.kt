@@ -25,6 +25,7 @@ import com.tide.common.AppTypography
 import com.tide.common.appColorPalette
 import com.tide.history.model.HistoryDrinkIntakeRecord
 import com.tide.history.model.toIconRes
+import com.tide.utils.getFormattedTime
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import watertracker.feature.history.generated.resources.Res
@@ -117,7 +118,6 @@ fun HistoryDrinkIntakeRecord.toStoryModel() =
         recordId = id,
         label = name,
         volume = amount,
-//        time = getFormattedTime(createdAt),
-        time = "--:--",
+        time = getFormattedTime(createdAt),
         iconRes = drinkType.toIconRes()
     )

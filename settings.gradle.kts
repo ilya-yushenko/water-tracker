@@ -31,6 +31,7 @@ dependencyResolutionManagement {
 include(":di")
 include(":common")
 include(":core:db")
+include(":core:utils")
 include(":composeApp")
 include(":feature:hydration")
 include(":feature:statistics")
