@@ -2,8 +2,7 @@ package com.tide.hydration.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.tide.common.base.BaseViewModel
 import com.tide.hydration.domain.AddDrinkIntakeRecordUseCase
 import com.tide.hydration.domain.DeleteDrinkIntakeRecordUseCase
 import com.tide.hydration.domain.GetDrinkIntakeRecordsByDateUseCase
@@ -19,7 +18,7 @@ class HydrationViewModel(
     private val addDrinkIntakeRecordUseCase: AddDrinkIntakeRecordUseCase,
     private val getDrinkIntakeRecordsByDateUseCase: GetDrinkIntakeRecordsByDateUseCase,
     private val deleteDrinkIntakeRecordUseCase: DeleteDrinkIntakeRecordUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _currentData = mutableStateOf("")
     val currentData: State<String> = _currentData
@@ -40,21 +39,21 @@ class HydrationViewModel(
     }
 
     fun addIntakeRecord(drinkType: HydrationDrinkType, name: String, amount: Int) {
-        viewModelScope.launch {
+        launch {
             addDrinkIntakeRecordUseCase(drinkType, name, amount)
             loadDailyIntake()
         }
     }
 
     fun deleteIntakeRecord(recordId: String) {
-        viewModelScope.launch {
+        launch {
             deleteDrinkIntakeRecordUseCase(recordId)
             loadDailyIntake()
         }
     }
 
     private fun loadDailyIntake() {
-        viewModelScope.launch {
+        launch {
             val today = Clock.System.now().toEpochMilliseconds()
             val intakes = getDrinkIntakeRecordsByDateUseCase(today)
             _dailyIntake.value = intakes.sumOf { it.amount }

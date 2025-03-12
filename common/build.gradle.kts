@@ -19,6 +19,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.components.resources)
+            implementation(libs.androidx.lifecycle.viewmodel)
         }
     }
 }
