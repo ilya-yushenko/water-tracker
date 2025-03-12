@@ -25,7 +25,6 @@ import com.tide.common.AppTypography
 import com.tide.common.appColorPalette
 import com.tide.history.model.HistoryDrinkIntakeRecord
 import com.tide.history.model.toIconRes
-import com.tide.utils.getFormattedTime
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import watertracker.feature.history.generated.resources.Res
@@ -35,7 +34,7 @@ data class StoryModel(
     val recordId: String,
     val label: String,
     val volume: Int,
-    val time: String,
+    val time: Long,
     val iconRes: DrawableResource
 )
 
@@ -118,6 +117,6 @@ fun HistoryDrinkIntakeRecord.toStoryModel() =
         recordId = id,
         label = name,
         volume = amount,
-        time = getFormattedTime(createdAt),
+        time = createdAt,
         iconRes = drinkType.toIconRes()
     )

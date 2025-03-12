@@ -2,4 +2,5 @@
 <resources>
     <string name="history_screen_title">History</string>
     <string name="history_screen_story">Today's story</string>
+    <string name="history_screen_yesterday">Yesterday</string>
 </resources>
