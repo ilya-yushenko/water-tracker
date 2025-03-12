@@ -6,6 +6,8 @@ import com.tide.db.model.DrinkIntakeRecord
 import com.tide.db.model.DrinkType
 import io.realm.kotlin.Realm
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlin.math.min
@@ -38,36 +40,47 @@ class RealmDrinkIntakeStorage(
     /**
      *  Get all records
      * */
-    override fun getIntakeRecords(): List<DrinkIntakeRecord> {
-        return database.query(DrinkIntakeRecordEntity::class).find().map { entity ->
-            DrinkIntakeRecord(
-                id = entity.id,
-                drinkType = DrinkType.valueOf(entity.drinkType),
-                name = entity.name,
-                amount = entity.amount,
-                createdAt = entity.createdAt,
-                updatedAt = entity.updatedAt
-            )
-        }
+    override fun getIntakeRecords(): Flow<List<DrinkIntakeRecord>> {
+        return database.query(DrinkIntakeRecordEntity::class).find().asFlow()
+            .map { results ->
+                results.list.map { entity ->
+                    DrinkIntakeRecord(
+                        id = entity.id,
+                        drinkType = DrinkType.valueOf(entity.drinkType),
+                        name = entity.name,
+                        amount = entity.amount,
+                        createdAt = entity.createdAt,
+                        updatedAt = entity.updatedAt
+                    )
+                }
+            }
     }
 
     /**
      * Getting records by pagination: returns "page" from results
      */
-    override fun getIntakeRecordsByPage(page: Int, pageSize: Int): List<DrinkIntakeRecord> {
-        val allRecords = database.query(DrinkIntakeRecordEntity::class).find()
-        val fromIndex = page * pageSize
-        if (fromIndex >= allRecords.size) return emptyList()
-        val toIndex = min(fromIndex + pageSize, allRecords.size)
-        return allRecords.subList(fromIndex, toIndex).map { entity ->
-            DrinkIntakeRecord(
-                id = entity.id,
-                drinkType = DrinkType.valueOf(entity.drinkType),
-                name = entity.name,
-                amount = entity.amount,
-                createdAt = entity.createdAt,
-                updatedAt = entity.updatedAt
-            )
+    override fun getIntakeRecordsByPage(
+        page: Int,
+        pageSize: Int
+    ): Flow<List<DrinkIntakeRecord>> {
+        return database.query(DrinkIntakeRecordEntity::class).find().asFlow().map { results ->
+            val list = results.list
+            val fromIndex = page * pageSize
+            if (fromIndex >= list.size) {
+                emptyList()
+            } else {
+                val toIndex = min(fromIndex + pageSize, list.size)
+                list.subList(fromIndex, toIndex).map { entity ->
+                    DrinkIntakeRecord(
+                        id = entity.id,
+                        drinkType = DrinkType.valueOf(entity.drinkType),
+                        name = entity.name,
+                        amount = entity.amount,
+                        createdAt = entity.createdAt,
+                        updatedAt = entity.updatedAt
+                    )
+                }
+            }
         }
     }
 
@@ -77,41 +90,45 @@ class RealmDrinkIntakeStorage(
     override fun getIntakeRecordsByPeriod(
         startOfDay: Long,
         endOfDay: Long
-    ): List<DrinkIntakeRecord> {
+    ): Flow<List<DrinkIntakeRecord>> {
         return database.query(
             DrinkIntakeRecordEntity::class,
             "createdAt >= $0 AND createdAt <= $1",
             startOfDay,
             endOfDay
-        ).find().map { entity ->
-            DrinkIntakeRecord(
-                id = entity.id,
-                drinkType = DrinkType.valueOf(entity.drinkType),
-                name = entity.name,
-                amount = entity.amount,
-                createdAt = entity.createdAt,
-                updatedAt = entity.updatedAt
-            )
+        ).find().asFlow().map { results ->
+            results.list.map { entity ->
+                DrinkIntakeRecord(
+                    id = entity.id,
+                    drinkType = DrinkType.valueOf(entity.drinkType),
+                    name = entity.name,
+                    amount = entity.amount,
+                    createdAt = entity.createdAt,
+                    updatedAt = entity.updatedAt
+                )
+            }
         }
     }
 
     /**
      * Get records by drink type
      */
-    override fun getIntakeRecordsByDrinkType(drinkType: DrinkType): List<DrinkIntakeRecord> {
+    override fun getIntakeRecordsByDrinkType(drinkType: DrinkType): Flow<List<DrinkIntakeRecord>> {
         return database.query(
             DrinkIntakeRecordEntity::class,
             "drinkType == $0",
             drinkType.name
-        ).find().map { entity ->
-            DrinkIntakeRecord(
-                id = entity.id,
-                drinkType = DrinkType.valueOf(entity.drinkType),
-                name = entity.name,
-                amount = entity.amount,
-                createdAt = entity.createdAt,
-                updatedAt = entity.updatedAt
-            )
+        ).find().asFlow().map { results ->
+            results.list.map { entity ->
+                DrinkIntakeRecord(
+                    id = entity.id,
+                    drinkType = DrinkType.valueOf(entity.drinkType),
+                    name = entity.name,
+                    amount = entity.amount,
+                    createdAt = entity.createdAt,
+                    updatedAt = entity.updatedAt
+                )
+            }
         }
     }
 

@@ -26,16 +26,17 @@ class HistoryViewModel(
     fun deleteIntakeRecord(recordId: String) {
         launch {
             deleteDrinkIntakeRecordUseCase(recordId)
-            loadHistoryIntake()
         }
     }
 
     private fun loadHistoryIntake() {
         launch {
-            val intakes = getIntakeRecordsByPageUseCase(0, 100)
-            _storyLog.value = intakes
-                .sortedByDescending { it.createdAt }
-                .map { it.toStoryModel() }
+            getIntakeRecordsByPageUseCase(0, 100)
+                .collect { intakes ->
+                    _storyLog.value = intakes
+                        .sortedByDescending { it.createdAt }
+                        .map { it.toStoryModel() }
+                }
         }
     }
 

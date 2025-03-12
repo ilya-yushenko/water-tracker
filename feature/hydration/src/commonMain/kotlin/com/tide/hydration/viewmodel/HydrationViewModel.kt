@@ -41,25 +41,25 @@ class HydrationViewModel(
     fun addIntakeRecord(drinkType: HydrationDrinkType, name: String, amount: Int) {
         launch {
             addDrinkIntakeRecordUseCase(drinkType, name, amount)
-            loadDailyIntake()
         }
     }
 
     fun deleteIntakeRecord(recordId: String) {
         launch {
             deleteDrinkIntakeRecordUseCase(recordId)
-            loadDailyIntake()
         }
     }
 
     private fun loadDailyIntake() {
         launch {
             val today = Clock.System.now().toEpochMilliseconds()
-            val intakes = getDrinkIntakeRecordsByDateUseCase(today)
-            _dailyIntake.value = intakes.sumOf { it.amount }
-            _storyLog.value = intakes
-                .sortedByDescending { it.createdAt }
-                .map { it.toStoryModel() }
+            val result = getDrinkIntakeRecordsByDateUseCase(today)
+            result.collect { intakes ->
+                _dailyIntake.value = intakes.sumOf { it.amount }
+                _storyLog.value = intakes
+                    .sortedByDescending { it.createdAt }
+                    .map { it.toStoryModel() }
+            }
         }
     }
 

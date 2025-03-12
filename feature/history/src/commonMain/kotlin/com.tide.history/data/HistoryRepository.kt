@@ -2,9 +2,10 @@ package com.tide.history.data
 
 import com.tide.history.model.HistoryDrinkIntakeRecord
 import com.tide.history.model.HistoryDrinkType
+import kotlinx.coroutines.flow.Flow
 
 interface HistoryRepository {
-    fun getIntakeRecordsByPage(page: Int, pageSize: Int): List<HistoryDrinkIntakeRecord>
+    fun getIntakeRecordsByPage(page: Int, pageSize: Int): Flow<List<HistoryDrinkIntakeRecord>>
     suspend fun deleteIntakeRecord(recordId: String)
     suspend fun updateIntakeRecord(
         recordId: String,

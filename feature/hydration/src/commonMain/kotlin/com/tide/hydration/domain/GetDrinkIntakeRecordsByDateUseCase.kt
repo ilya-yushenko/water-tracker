@@ -2,6 +2,7 @@ package com.tide.hydration.domain
 
 import com.tide.hydration.data.HydrationRepository
 import com.tide.hydration.model.HydrationDrinkIntakeRecord
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -9,7 +10,7 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
 class GetDrinkIntakeRecordsByDateUseCase(private val repository: HydrationRepository) {
-    operator fun invoke(timestamp: Long): List<HydrationDrinkIntakeRecord> {
+    operator fun invoke(timestamp: Long): Flow<List<HydrationDrinkIntakeRecord>> {
         val instant = Instant.fromEpochMilliseconds(timestamp)
         val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
